@@ -142,7 +142,7 @@ const Scene = () => {
       let glassesDropY = 8; // start high above
       let glassesTargetY = 0.08; // sits right on eye level
 
-      const { loadCharacter } = setCharacter(scene);
+      const { loadCharacter } = setCharacter(scene, camera, renderer);
       const light = setLighting(scene);
       const progress = setProgress(setLoading);
 
@@ -195,11 +195,8 @@ const Scene = () => {
       };
 
       const onTouchEnd = () => {
-        handleTouchEnd((x, y, interpolationX, interpolationY) => {
-          mouse = { x, y };
-          interpolation = { x: interpolationX, y: interpolationY };
-        });
-      };
+  handleTouchEnd(mouse.x, mouse.y, interpolation.x, interpolation.y, scene, camera);
+};
 
       const clock = new THREE.Clock();
 
