@@ -1,0 +1,92 @@
+/* DOT CURSOR */
+.cursor-main {
+  --size: 12px;
+  position: fixed;
+  top: 0; left: 0;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  background: #e6c3ff;
+  box-shadow: 0 0 12px 4px rgba(196,129,255,0.6);
+  mix-blend-mode: difference;
+  transition: width 0.3s, height 0.3s, background 0.2s, box-shadow 0.2s;
+}
+
+/* TRAIL RING */
+.cursor-trail {
+  position: fixed;
+  top: 0; left: 0;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(196,129,255,0.45);
+  pointer-events: none;
+  z-index: 9998;
+  transition: width 0.3s, height 0.3s, border-color 0.2s, opacity 0.2s;
+}
+
+/* GLOBAL MOUSE GLOW */
+.cursor-glow {
+  position: fixed;
+  top: 0; left: 0;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(circle, rgba(196,129,255,0.07) 0%, transparent 65%);
+  transform: translate(-50%, -50%);
+}
+
+/* HOVER STATE */
+.cursor-hover {
+  background: #ff6ef7 !important;
+  box-shadow: 0 0 20px 6px rgba(255,110,247,0.5) !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+.trail-hover {
+  width: 60px !important;
+  height: 60px !important;
+  border-color: rgba(255,110,247,0.4) !important;
+}
+
+/* ICON EXPAND */
+.cursor-icons {
+  top: 10px; left: 10px;
+  height: calc(var(--cursorH) - 20px);
+  width: 3px !important;
+  border-radius: 4px !important;
+  background: var(--accentColor) !important;
+  mix-blend-mode: normal !important;
+  transition: all 0.5s ease-out, height 0.5s ease-in-out;
+}
+
+/* DISABLE */
+.cursor-disable, .trail-disable {
+  opacity: 0 !important;
+}
+
+@media only screen and (max-width: 600px) {
+  .cursor-main, .cursor-trail, .cursor-glow { display: none; }
+}
+
+/* FLUID BLOB CANVAS */
+.cursor-blob-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9998;
+  mix-blend-mode: screen;
+}
+
+.cursor-spark-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 99998;
+}

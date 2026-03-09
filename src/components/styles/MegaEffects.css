@@ -1,0 +1,196 @@
+
+/* ============================
+   1. MAGNETIC
+   ============================ */
+.magnetic {
+  transition: transform 0.15s ease;
+  will-change: transform;
+}
+
+/* ============================
+   2. AURORA BACKGROUND
+   ============================ */
+.aurora-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  mix-blend-mode: screen;
+  opacity: 0.12;
+}
+.a1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, #c481ff, #5500ff);
+  top: -10%; left: -10%;
+  animation: auroraFloat1 18s ease-in-out infinite;
+}
+.a2 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, #ff8fff, #0055ff);
+  top: 40%; right: -5%;
+  animation: auroraFloat2 22s ease-in-out infinite;
+}
+.a3 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, #00ffdd, #8800ff);
+  bottom: 10%; left: 30%;
+  animation: auroraFloat1 16s ease-in-out infinite reverse;
+}
+@keyframes auroraFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(80px, -60px) scale(1.1); }
+  66% { transform: translate(-40px, 80px) scale(0.9); }
+}
+@keyframes auroraFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-100px, 60px) scale(1.15); }
+}
+
+/* ============================
+   3. NEON BORDERS
+   ============================ */
+.neon-border-active {
+  border-color: rgba(196, 129, 255, 0.5) !important;
+  box-shadow:
+    0 0 8px rgba(196,129,255,0.3),
+    0 0 20px rgba(196,129,255,0.15),
+    inset 0 0 12px rgba(196,129,255,0.05) !important;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* ============================
+   4. COUNTER
+   ============================ */
+[data-count] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================
+   5. MORPHING SHAPES
+   ============================ */
+.morph-shapes {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.morph-shape {
+  position: absolute;
+  opacity: 0.04;
+  animation: morphAnim 20s ease-in-out infinite;
+}
+.ms1 {
+  width: 400px; height: 400px;
+  background: #c481ff;
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  top: 20%; left: 5%;
+  animation-duration: 18s;
+}
+.ms2 {
+  width: 300px; height: 300px;
+  background: #ff8fff;
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  bottom: 20%; right: 10%;
+  animation-duration: 24s;
+  animation-direction: reverse;
+}
+@keyframes morphAnim {
+  0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+  50% { border-radius: 50% 60% 30% 60% / 40% 40% 60% 50%; }
+  75% { border-radius: 40% 50% 60% 30% / 60% 50% 40% 70%; }
+}
+
+/* ============================
+   6. NOISE GRAIN
+   ============================ */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  mix-blend-mode: overlay;
+}
+
+/* ============================
+   7. 3D DEPTH PARALLAX
+   ============================ */
+.depth-1, .depth-2, .depth-3 {
+  will-change: transform;
+}
+
+/* ============================
+   8. SPLIT REVEAL
+   ============================ */
+.split-mask {
+  overflow: hidden;
+}
+.split-inner {
+  transform: translateY(100%);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.split-reveal.split-active .split-inner {
+  transform: translateY(0);
+}
+
+/* ============================
+   9. LIQUID METAL TEXT
+   ============================ */
+.liquid-metal {
+  background: linear-gradient(
+    90deg,
+    #fff 0%,
+    #c481ff 20%,
+    #ff8fff 35%,
+    #ffffff 50%,
+    #c481ff 65%,
+    #ff8fff 80%,
+    #fff 100%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: liquidFlow 4s linear infinite;
+}
+@keyframes liquidFlow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+
+/* ============================
+   10. GYROSCOPE TILT
+   ============================ */
+.gyro-card {
+  will-change: transform;
+  transition: transform 0.15s ease;
+  position: relative;
+  overflow: hidden;
+}
+.gyro-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(196,129,255,0.12) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+  border-radius: inherit;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+.gyro-card:hover::after {
+  opacity: 1;
+}
