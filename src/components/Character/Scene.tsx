@@ -142,8 +142,7 @@ const Scene = () => {
       let glassesDropY = 8; // start high above
       let glassesTargetY = 0.08; // sits right on eye level
 
-      const { loadCharacter } = setCharacter(scene, camera, renderer);
-      const light = setLighting(scene);
+const { loadCharacter } = setCharacter(scene);      const light = setLighting(scene);
       const progress = setProgress(setLoading);
 
       loadCharacter().then((gltf) => {
@@ -195,8 +194,10 @@ const Scene = () => {
       };
 
       const onTouchEnd = () => {
-  handleTouchEnd(mouse.x, mouse.y, interpolation.x, interpolation.y, scene, camera);
-};
+  handleTouchEnd((x, y, interpolationX, interpolationY) => {
+  mouse = { x, y };
+  interpolation = { x: interpolationX, y: interpolationY };
+});
 
       const clock = new THREE.Clock();
 
@@ -208,8 +209,7 @@ const Scene = () => {
         if (mixer) mixer.update(delta);
 
         if (headBone) {
-          handleHeadRotation(headBone, mouse.x, mouse.y, interpolation.x, interpolation.y);
-        }
+handleHeadRotation(headBone, mouse.x, mouse.y, interpolation.x, interpolation.y, camera);        }
 
         // GLASSES ANIMATION
         if (glasses) {
