@@ -1,4 +1,3 @@
-import gsap from "gsap";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import setCharacter from "./utils/character";
@@ -16,57 +15,34 @@ import { setProgress } from "../Loading";
 
 function createGlasses(): THREE.Group {
   const glasses = new THREE.Group();
-
-  const frameMat = new THREE.MeshStandardMaterial({
-    color: 0x080808, metalness: 0.98, roughness: 0.02,
-  });
-  const lensMat = new THREE.MeshPhysicalMaterial({
-    color: 0x050510, metalness: 0.1, roughness: 0.0,
-    transparent: true, opacity: 0.85, reflectivity: 1.0,
-  });
-  const glowMat = new THREE.MeshBasicMaterial({
-    color: 0xc481ff, transparent: true, opacity: 0.7,
-  });
-
   const S = 0.20;
 
-  // LEFT RIM + LENS
-  const lRim = new THREE.Mesh(new THREE.TorusGeometry(S, 0.016, 24, 100), frameMat);
-  lRim.position.set(-0.24, 0, 0); glasses.add(lRim);
-  const lLens = new THREE.Mesh(new THREE.CircleGeometry(S - 0.016, 80), lensMat);
-  lLens.position.set(-0.24, 0, 0.002); glasses.add(lLens);
+  const frameMat = new THREE.MeshStandardMaterial({ color: 0x050505, metalness: 0.95, roughness: 0.05 });
+  const lensMat  = new THREE.MeshPhysicalMaterial({ color: 0x000000, transparent: true, opacity: 0.92, roughness: 0 });
+  const glowMat  = new THREE.MeshBasicMaterial({ color: 0xc481ff, transparent: true, opacity: 0.18 });
 
-  // RIGHT RIM + LENS
-  const rRim = new THREE.Mesh(new THREE.TorusGeometry(S, 0.016, 24, 100), frameMat);
-  rRim.position.set(0.24, 0, 0); glasses.add(rRim);
-  const rLens = new THREE.Mesh(new THREE.CircleGeometry(S - 0.016, 80), lensMat);
-  rLens.position.set(0.24, 0, 0.002); glasses.add(rLens);
+  const leftRim  = new THREE.Mesh(new THREE.TorusGeometry(S*0.70, S*0.07, 20, 80), frameMat);
+  leftRim.position.set(-S*1.2, 0, 0); glasses.add(leftRim);
+  const leftFill = new THREE.Mesh(new THREE.CircleGeometry(S*0.63, 60), lensMat);
+  leftFill.position.set(-S*1.2, 0, 0.002); glasses.add(leftFill);
 
-  // BRIDGE
-  const bridge = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.009, 0.08, 12), frameMat);
-  bridge.rotation.z = Math.PI / 2;
-  bridge.position.set(0, 0.015, 0.01); glasses.add(bridge);
+  const rightRim  = new THREE.Mesh(new THREE.TorusGeometry(S*0.70, S*0.07, 20, 80), frameMat);
+  rightRim.position.set(S*1.2, 0, 0); glasses.add(rightRim);
+  const rightFill = new THREE.Mesh(new THREE.CircleGeometry(S*0.63, 60), lensMat);
+  rightFill.position.set(S*1.2, 0, 0.002); glasses.add(rightFill);
 
-  // LEFT ARM
-  const lArm = new THREE.Mesh(new THREE.CylinderGeometry(0.007, 0.004, 0.52, 12), frameMat);
-  lArm.rotation.z = Math.PI / 2;
-  lArm.position.set(-0.60, 0, -0.04); glasses.add(lArm);
+  const bridge = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, S*0.5, 12), frameMat);
+  bridge.rotation.z = Math.PI/2; bridge.position.set(0, 0.01, 0.01); glasses.add(bridge);
 
-  // RIGHT ARM
-  const rArm = new THREE.Mesh(new THREE.CylinderGeometry(0.007, 0.004, 0.52, 12), frameMat);
-  rArm.rotation.z = Math.PI / 2;
-  rArm.position.set(0.60, 0, -0.04); glasses.add(rArm);
+  const leftArm = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.004, S*2.1, 10), frameMat);
+  leftArm.rotation.z = Math.PI/2; leftArm.position.set(-S*2.5, 0, -S*0.3); glasses.add(leftArm);
+  const rightArm = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.004, S*2.1, 10), frameMat);
+  rightArm.rotation.z = Math.PI/2; rightArm.position.set(S*2.5, 0, -S*0.3); glasses.add(rightArm);
 
-  // NEON GLOW RINGS
-  const lGlow = new THREE.Mesh(new THREE.TorusGeometry(S + 0.012, 0.007, 12, 100), glowMat);
-  lGlow.position.set(-0.24, 0, -0.005); glasses.add(lGlow);
-  const rGlow = new THREE.Mesh(new THREE.TorusGeometry(S + 0.012, 0.007, 12, 100), glowMat);
-  rGlow.position.set(0.24, 0, -0.005); glasses.add(rGlow);
-
-  // NEON POINT LIGHT — makes glasses glow purple
-  const neonLight = new THREE.PointLight(0xc481ff, 3.0, 1.2);
-  neonLight.position.set(0, 0, 0.15);
-  glasses.add(neonLight);
+  const leftGlow = new THREE.Mesh(new THREE.TorusGeometry(S*0.73, S*0.04, 12, 80), glowMat);
+  leftGlow.position.set(-S*1.2, 0, -0.003); glasses.add(leftGlow);
+  const rightGlow = new THREE.Mesh(new THREE.TorusGeometry(S*0.73, S*0.04, 12, 80), glowMat);
+  rightGlow.position.set(S*1.2, 0, -0.003); glasses.add(rightGlow);
 
   return glasses;
 }
@@ -80,16 +56,15 @@ const Scene = () => {
   useEffect(() => {
     if (!canvasDiv.current) return;
 
-    const rect      = canvasDiv.current.getBoundingClientRect();
-    const container = { width: rect.width, height: rect.height };
-    const aspect    = container.width / container.height;
-    const scene     = sceneRef.current;
+    const rect   = canvasDiv.current.getBoundingClientRect();
+    const aspect = rect.width / rect.height;
+    const scene  = sceneRef.current;
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(container.width, container.height);
+    renderer.setSize(rect.width, rect.height);
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.toneMapping          = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure  = 1;
+    renderer.toneMapping         = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1;
     canvasDiv.current.appendChild(renderer.domElement);
 
     const camera = new THREE.PerspectiveCamera(14.5, aspect, 0.1, 1000);
@@ -97,28 +72,27 @@ const Scene = () => {
     camera.zoom = 1.1;
     camera.updateProjectionMatrix();
 
-    let headBone:       THREE.Object3D | null = null;
-    let mixer:          THREE.AnimationMixer | null = null;
-    let glasses:        THREE.Group | null = null;
-    let glassesFloatT   = 0;
-    let glassesLanded   = false;
+    let headBone:     THREE.Object3D | null = null;
+    let _screenLight: THREE.Object3D | null = null;
+    let mixer:        THREE.AnimationMixer | null = null;
+    let glasses:      THREE.Group | null = null;
+    let glassesFloatT = 0;
+    let glassesLanded = false;
+    let dropY = 5.0;
+    const landY = 0.10;
+    let spinZ = 0;
 
-    // Drop state
-    let dropY      = 5.0;   // bone-space: start high above head
-    const landY    = 0.10;  // bone-space: eye level on face
-    let spinZ      = 0;     // accumulate spin
-
-    const { loadCharacter } = setCharacter(renderer, scene, camera);
+    // ✅ ORIGINAL call — setCharacter(scene) only
+    const { loadCharacter } = setCharacter(scene);
     const light    = setLighting(scene);
     const progress = setProgress(setLoading);
 
-    // Safety: if character takes too long, force complete loading anyway
-    const loadingFallback = setTimeout(() => {
+    const fallbackTimer = setTimeout(() => {
       progress.loaded().then(() => {});
-    }, 5000);
+    }, 6000);
 
     loadCharacter().then((gltf) => {
-      clearTimeout(loadingFallback);
+      clearTimeout(fallbackTimer);
       if (!gltf) { progress.loaded().then(() => {}); return; }
 
       const animations = setAnimations(gltf);
@@ -128,20 +102,13 @@ const Scene = () => {
       const char = gltf.scene;
       scene.add(char);
 
-      // Try both common bone names
-      headBone = char.getObjectByName("spine006")
-              || char.getObjectByName("Head")
-              || char.getObjectByName("head")
-              || null;
+      headBone     = char.getObjectByName("spine006") || char.getObjectByName("Head") || char.getObjectByName("head") || null;
+      _screenLight = char.getObjectByName("screenlight") || null;
 
       if (headBone) {
         glasses = createGlasses();
-
-        // START: way above head in bone-local space, spinning
         glasses.position.set(0, dropY, 0.18);
-        glasses.rotation.set(Math.PI * 0.5, 0, 0); // face forward
-        glasses.scale.set(1, 1, 1);
-
+        glasses.rotation.x = Math.PI * 0.5;
         headBone.add(glasses);
       }
 
@@ -152,27 +119,24 @@ const Scene = () => {
         }, 2500);
       });
 
-      window.addEventListener("resize", () =>
-        handleResize(renderer, camera, canvasDiv, char)
-      );
+      window.addEventListener("resize", () => handleResize(renderer, camera, canvasDiv, char));
     });
 
-    let mouse        = { x: 0, y: 0 };
+    let mouse = { x: 0, y: 0 };
     let interpolation = { x: 0.1, y: 0.2 };
-    let debounce: number | undefined;
 
     const onMouseMove = (e: MouseEvent) =>
-      handleMouseMove(e, (x, y) => { mouse = { x, y }; });
+      handleMouseMove(e, (x, y) => (mouse = { x, y }));
 
+    let debounce: number | undefined;
     const onTouchStart = (e: TouchEvent) => {
       const el = e.target as HTMLElement;
-      debounce = window.setTimeout(() => {
+      debounce = setTimeout(() => {
         el?.addEventListener("touchmove", (ev: TouchEvent) =>
-          handleTouchMove(ev, (x, y) => { mouse = { x, y }; })
+          handleTouchMove(ev, (x, y) => (mouse = { x, y }))
         );
       }, 200);
     };
-
     const onTouchEnd = () =>
       handleTouchEnd((x, y, ix, iy) => {
         mouse = { x, y };
@@ -180,71 +144,36 @@ const Scene = () => {
       });
 
     const clock = new THREE.Clock();
-
     const animate = () => {
       requestAnimationFrame(animate);
       const delta = clock.getDelta();
 
       if (mixer) mixer.update(delta);
-      if (headBone) {
-        handleHeadRotation(headBone, mouse.x, mouse.y, interpolation.x, interpolation.y);
-      }
+      if (headBone) handleHeadRotation(headBone, mouse.x, mouse.y, interpolation.x, interpolation.y);
 
-      // ── GLASSES ANIMATION ──
       if (glasses) {
         if (!glassesLanded) {
-          // Smooth drop toward landY
           dropY += (landY - dropY) * 0.045;
-          glasses.position.y = dropY;
-
-          // Full 360 spin while falling
           spinZ += 0.14;
+          glasses.position.y = dropY;
           glasses.rotation.z = spinZ;
-
-          // Side wobble while dropping
-          glasses.position.x = Math.sin(spinZ * 1.5) * 0.06;
-
-          // Landed check
+          glasses.rotation.x = Math.PI * 0.5 + Math.sin(spinZ * 1.5) * 0.06;
           if (Math.abs(dropY - landY) < 0.004) {
             glassesLanded = true;
-            glasses.position.set(0, landY, 0.18);
+            glasses.position.y = landY;
             glasses.rotation.z = 0;
-
-            // Landing bounce — GSAP scale
-            gsap.fromTo(glasses.scale,
-              { x: 1.2, y: 1.2, z: 1.2 },
-              { x: 1.0, y: 1.0, z: 1.0, duration: 0.45, ease: "back.out(2.5)" }
-            );
-
-            // Neon glow flash on land
-            const neon = glasses.children.find(
-              c => c instanceof THREE.PointLight
-            ) as THREE.PointLight | undefined;
-            if (neon) {
-              gsap.fromTo(neon, { intensity: 8 }, { intensity: 3.0, duration: 0.6 });
-            }
+            glasses.rotation.x = Math.PI * 0.5;
           }
-
         } else {
-          // ── FLOATING after landing ──
           glassesFloatT += delta;
-          glasses.position.y = landY + Math.sin(glassesFloatT * 0.9) * 0.004;
-          glasses.position.x = Math.sin(glassesFloatT * 0.55) * 0.003;
-          glasses.rotation.z = Math.sin(glassesFloatT * 0.65) * 0.01;
-
-          // Glow pulse
-          const neon = glasses.children.find(
-            c => c instanceof THREE.PointLight
-          ) as THREE.PointLight | undefined;
-          if (neon) {
-            neon.intensity = 2.5 + Math.sin(glassesFloatT * 2.2) * 0.8;
-          }
+          glasses.position.y = landY + Math.sin(glassesFloatT * 1.2) * 0.005;
+          glasses.position.x = Math.sin(glassesFloatT * 0.7) * 0.003;
+          glasses.rotation.z = Math.sin(glassesFloatT * 0.9) * 0.012;
         }
       }
 
       renderer.render(scene, camera);
     };
-
     animate();
 
     const landingDiv = document.getElementById("landingDiv");
@@ -255,6 +184,7 @@ const Scene = () => {
     }
 
     return () => {
+      clearTimeout(fallbackTimer);
       document.removeEventListener("mousemove", onMouseMove);
       if (landingDiv) {
         landingDiv.removeEventListener("touchstart", onTouchStart);
@@ -267,7 +197,8 @@ const Scene = () => {
 
   return (
     <div className="character-model">
-      <div ref={canvasDiv} className="character-model" />
+      <div className="character-rim" />
+      <div ref={canvasDiv} style={{ width: "100%", height: "100%" }} />
       <div ref={hoverDivRef} className="character-hover" />
     </div>
   );
