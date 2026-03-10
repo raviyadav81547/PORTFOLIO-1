@@ -6,85 +6,94 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const CHARS = "!<>-_\\/[]{}—=+*^?#ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-const RAVI_DATA = [
-  { char: "R", color: "#FF3B3B", glow: "#FF000088", rot: -5 },
-  { char: "A", color: "#FF8C00", glow: "#FF8C0088", rot: -2 },
-  { char: "V", color: "#FFD700", glow: "#FFD70088", rot: 2  },
-  { char: "I", color: "#39D353", glow: "#39D35388", rot: 5  },
-];
-
-const KUMAR_DATA = [
-  { char: "K", color: "#4285F4", glow: "#4285F488", rot: -6   },
-  { char: "U", color: "#7B2FFF", glow: "#7B2FFF88", rot: -3   },
-  { char: "M", color: "#c481ff", glow: "#c481ff88", rot: 0    },
-  { char: "A", color: "#FF69B4", glow: "#FF69B488", rot: 3    },
-  { char: "R", color: "#FF3B3B", glow: "#FF3B3B88", rot: 6    },
-];
-
-const WORDS = ["AI Builder.", "Automation.", "GenAI Dev.", "Problem Solver.", "RAVI KUMAR."];
+const WORDS = ["AI Builder.", "Automation.", "GenAI Dev.", "Problem Solver.", "Creator."];
 
 const Landing = ({ children }: PropsWithChildren) => {
-  const nameRef  = useRef<HTMLDivElement>(null);
-  const typeRef  = useRef<HTMLSpanElement>(null);
+  const nameRef    = useRef<HTMLDivElement>(null);
+  const typeRef    = useRef<HTMLSpanElement>(null);
+  const rightRef   = useRef<HTMLDivElement>(null);
 
-  // ── PAGE LOAD ANIMATION ──
+  // ── PAGE LOAD: NAME DROP ──
   useEffect(() => {
     const letters = nameRef.current?.querySelectorAll<HTMLElement>(".nl");
-    if (!letters) return;
-
-    gsap.set(letters, { y: -150, opacity: 0, rotateX: 90, scale: 0.5 });
-
+    if (!letters?.length) return;
+    gsap.set(letters, { y: -100, opacity: 0, rotateX: 80, scale: 0.7 });
     gsap.to(letters, {
       y: 0, opacity: 1, rotateX: 0, scale: 1,
-      duration: 0.8,
-      stagger: 0.07,
-      delay: 3.3,
-      ease: "back.out(2.2)",
+      duration: 0.7, stagger: 0.06, delay: 3.4,
+      ease: "back.out(2)",
     });
-
-    // ── CONTINUOUS FLOAT ──
     letters.forEach((el, i) => {
       gsap.to(el, {
-        y: `+=${3 + i * 0.5}`,
-        rotateZ: `+=${1.5}`,
-        duration: 1.6 + i * 0.18,
+        y: `+=${2 + i * 0.3}`,
+        duration: 1.8 + i * 0.15,
         repeat: -1, yoyo: true,
-        ease: "sine.inOut",
-        delay: i * 0.22,
+        ease: "sine.inOut", delay: i * 0.2,
       });
     });
   }, []);
 
-  // ── HOVER SCRAMBLE + COLOR FLASH ──
+  // ── PAGE LOAD: RIGHT SIDE CINEMATIC ENTRY ──
+  useEffect(() => {
+    const el = rightRef.current;
+    if (!el) return;
+
+    const anAI    = el.querySelector(".an-ai-line");
+    const line1   = el.querySelector(".word-line-1");
+    const line2   = el.querySelector(".word-line-2");
+    const tagline = el.querySelector(".right-tagline");
+    const badge   = el.querySelector(".right-badge");
+
+    // Set initial states
+    gsap.set(anAI,    { x: -60, opacity: 0 });
+    gsap.set(line1,   { y: 80, opacity: 0, rotateX: 45, skewX: -8 });
+    gsap.set(line2,   { y: 80, opacity: 0, rotateX: 45, skewX: -8 });
+    gsap.set(tagline, { x: 40, opacity: 0 });
+    gsap.set(badge,   { scale: 0, opacity: 0, rotation: -15 });
+
+    const tl = gsap.timeline({ delay: 3.8 });
+
+    tl.to(anAI,    { x: 0, opacity: 1, duration: 0.6, ease: "power3.out" })
+      .to(line1,   { y: 0, opacity: 1, rotateX: 0, skewX: 0, duration: 0.7, ease: "expo.out" }, "-=0.2")
+      .to(line2,   { y: 0, opacity: 1, rotateX: 0, skewX: 0, duration: 0.7, ease: "expo.out" }, "-=0.5")
+      .to(tagline, { x: 0, opacity: 1, duration: 0.5, ease: "power2.out" }, "-=0.3")
+      .to(badge,   { scale: 1, opacity: 1, rotation: 0, duration: 0.5, ease: "back.out(2)" }, "-=0.2");
+
+    // ── SCROLL: AUTOMATION → BUILDER swap ──
+    gsap.set(".w-automation", { y: 0, opacity: 1 });
+    gsap.set(".w-builder",    { y: "100%", opacity: 0 });
+
+    const st = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".landing-section",
+        start: "15% top", end: "55% top",
+        scrub: 1.2,
+      },
+    });
+    st.to(".w-automation",  { y: "-110%", opacity: 0, duration: 1 }, 0)
+      .to(".an-ai-line",    { y: "-30px", opacity: 0, duration: 0.8 }, 0)
+      .fromTo(".w-builder", { y: "110%", opacity: 0 },
+                            { y: "0%", opacity: 1, duration: 1 }, 0.1)
+      .fromTo(".builder-sub",{ y: "30px", opacity: 0 },
+                             { y: "0", opacity: 1, duration: 0.8 }, 0.2);
+
+    return () => { tl.kill(); st.kill(); };
+  }, []);
+
+  // ── HOVER SCRAMBLE ──
   useEffect(() => {
     const wrap = nameRef.current;
     if (!wrap) return;
-    const allData = [...RAVI_DATA, ...KUMAR_DATA];
-
     const onEnter = () => {
-      const letters = wrap.querySelectorAll<HTMLElement>(".nl");
-      letters.forEach((el, i) => {
+      wrap.querySelectorAll<HTMLElement>(".nl").forEach((el) => {
+        const orig = el.dataset.char || "";
         let tick = 0;
-        const orig = allData[i]?.char || "";
-        const origColor = allData[i]?.color || "#fff";
-        const allColors = [...RAVI_DATA, ...KUMAR_DATA].map(d => d.color);
         const iv = setInterval(() => {
-          if (tick++ > 12) {
-            clearInterval(iv);
-            el.textContent = orig;
-            el.style.color = origColor;
-            el.style.textShadow = `0 0 20px ${origColor}, 0 0 40px ${origColor}66, 2px 2px 0 ${origColor}99, 4px 4px 0 ${origColor}55, 6px 6px 12px rgba(0,0,0,0.7)`;
-            return;
-          }
+          if (tick++ > 10) { clearInterval(iv); el.textContent = orig; return; }
           el.textContent = CHARS[Math.floor(Math.random() * CHARS.length)];
-          const flashColor = allColors[Math.floor(Math.random() * allColors.length)];
-          el.style.color = flashColor;
-          el.style.textShadow = `0 0 30px ${flashColor}`;
-        }, 40);
+        }, 45);
       });
     };
-
     wrap.addEventListener("mouseenter", onEnter);
     return () => wrap.removeEventListener("mouseenter", onEnter);
   }, []);
@@ -93,98 +102,56 @@ const Landing = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     const el = typeRef.current;
     if (!el) return;
-    let wordIdx = 0, charIdx = 0, deleting = false;
-    let timeout: ReturnType<typeof setTimeout>;
-    let glitchTimeout: ReturnType<typeof setTimeout>;
+    let wi = 0, ci = 0, del = false;
+    let t: ReturnType<typeof setTimeout>;
+    let gt: ReturnType<typeof setTimeout>;
     const glitch = () => {
       const orig = el.textContent || "";
       let g = 0;
       const gl = () => {
-        if (g++ > 6) { el.textContent = orig; el.classList.remove("glitch-active"); return; }
-        el.textContent = orig.split("").map(c => Math.random() > 0.7 ? CHARS[Math.floor(Math.random() * CHARS.length)] : c).join("");
-        el.classList.add("glitch-active");
-        glitchTimeout = setTimeout(gl, 50);
+        if (g++ > 6) { el.textContent = orig; return; }
+        el.textContent = orig.split("").map(c =>
+          Math.random() > 0.7 ? CHARS[Math.floor(Math.random() * CHARS.length)] : c
+        ).join("");
+        gt = setTimeout(gl, 50);
       };
       gl();
     };
     const type = () => {
-      const word = WORDS[wordIdx];
-      if (!deleting) {
-        el.textContent = word.slice(0, ++charIdx);
-        if (charIdx === word.length) { deleting = true; timeout = setTimeout(() => { glitch(); type(); }, 1800); return; }
-        timeout = setTimeout(type, 80);
+      const w = WORDS[wi];
+      if (!del) {
+        el.textContent = w.slice(0, ++ci);
+        if (ci === w.length) { del = true; t = setTimeout(() => { glitch(); type(); }, 1800); return; }
+        t = setTimeout(type, 80);
       } else {
-        el.textContent = word.slice(0, --charIdx);
-        if (charIdx === 0) { deleting = false; wordIdx = (wordIdx + 1) % WORDS.length; timeout = setTimeout(type, 300); return; }
-        timeout = setTimeout(type, 40);
+        el.textContent = w.slice(0, --ci);
+        if (ci === 0) { del = false; wi = (wi + 1) % WORDS.length; t = setTimeout(type, 300); return; }
+        t = setTimeout(type, 40);
       }
     };
-    timeout = setTimeout(type, 1200);
-    return () => { clearTimeout(timeout); clearTimeout(glitchTimeout); };
-  }, []);
-
-  // ── RIGHT SIDE SCROLL ──
-  useEffect(() => {
-    gsap.set(".landing-h2-1",    { y: 0, opacity: 1 });
-    gsap.set(".landing-h2-2",    { y: "100%", opacity: 0 });
-    gsap.set(".landing-h2-info", { y: "100%", opacity: 0 });
-    gsap.set(".landing-h2-info-1",{ y: 0, opacity: 1 });
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".landing-section",
-        start: "20% top", end: "60% top",
-        scrub: 1,
-      },
-    });
-    tl.to(".landing-h2-1",     { y: "-120%", opacity: 0, duration: 1 }, 0)
-      .to(".landing-h2-info-1",{ y: "-120%", opacity: 0, duration: 1 }, 0)
-      .fromTo(".landing-h2-2",  { y: "120%", opacity: 0 }, { y: "0%", opacity: 1, duration: 1 }, 0.1)
-      .fromTo(".landing-h2-info",{ y: "120%", opacity: 0 }, { y: "0%", opacity: 1, duration: 1 }, 0.1);
-    return () => { tl.kill(); };
+    t = setTimeout(type, 1200);
+    return () => { clearTimeout(t); clearTimeout(gt); };
   }, []);
 
   return (
     <div className="landing-section" id="landingDiv">
       <div className="landing-container">
+
+        {/* ── LEFT: NAME ── */}
         <div className="landing-intro">
           <h2 className="hello-text">Hello! I'm</h2>
-
-          {/* ── 3D ARC NAME ── */}
           <div className="name-wrap" ref={nameRef}>
-            {/* RAVI row */}
-            <div className="name-row ravi-row">
-              {RAVI_DATA.map((d, i) => (
-                <span
-                  key={i}
-                  className="nl"
-                  style={{
-                    color: d.color,
-                    textShadow: `0 0 20px ${d.glow}, 0 0 40px ${d.glow}, 2px 2px 0 ${d.color}99, 4px 4px 0 ${d.color}55, 6px 6px 14px rgba(0,0,0,0.7)`,
-                    transform: `rotate(${d.rot}deg) translateY(${Math.abs(d.rot) * 2}px)`,
-                    display: "inline-block",
-                  }}
-                >{d.char}</span>
+            <div className="name-row">
+              {"RAVI".split("").map((c, i) => (
+                <span key={i} className="nl" data-char={c}>{c}</span>
               ))}
             </div>
-
-            {/* KUMAR row */}
             <div className="name-row kumar-row">
-              {KUMAR_DATA.map((d, i) => (
-                <span
-                  key={i}
-                  className="nl"
-                  style={{
-                    color: d.color,
-                    textShadow: `0 0 20px ${d.glow}, 0 0 40px ${d.glow}, 2px 2px 0 ${d.color}99, 4px 4px 0 ${d.color}55, 6px 6px 14px rgba(0,0,0,0.7)`,
-                    transform: `rotate(${d.rot}deg) translateY(${-Math.abs(d.rot) * 2}px)`,
-                    display: "inline-block",
-                  }}
-                >{d.char}</span>
+              {"KUMAR".split("").map((c, i) => (
+                <span key={i} className="nl nl-purple" data-char={c}>{c}</span>
               ))}
             </div>
           </div>
-
           <div className="typewriter-line">
             <span ref={typeRef} className="typewriter-text"></span>
             <span className="typewriter-cursor">|</span>
@@ -196,16 +163,44 @@ const Landing = ({ children }: PropsWithChildren) => {
           </div>
         </div>
 
-        <div className="landing-info">
-          <h3>An AI</h3>
-          <div className="landing-info-clip">
-            <div className="landing-h2-1 landing-word">AUTOMATION</div>
-            <div className="landing-h2-2 landing-word purple">BUILDER</div>
+        {/* ── RIGHT: 3D MOTION TEXT ── */}
+        <div className="landing-info" ref={rightRef}>
+
+          {/* "An AI" label */}
+          <div className="an-ai-line">
+            <span className="an-ai-text">An AI</span>
+            <span className="an-ai-dot"></span>
           </div>
-          <div className="landing-info-clip">
-            <div className="landing-h2-info-1 landing-word purple">AUTOMATION</div>
-            <div className="landing-h2-info landing-word">BUILDER</div>
+
+          {/* AUTOMATION word — clips and scrolls out */}
+          <div className="big-word-clip">
+            <div className="w-automation big-word">
+              <span className="bw-auto">AUTO</span><span className="bw-mation">MATION</span>
+            </div>
+            {/* BUILDER slides up on scroll */}
+            <div className="w-builder big-word">
+              <span className="bw-build">BUILD</span><span className="bw-er">ER</span>
+            </div>
           </div>
+
+          {/* Sub tagline — changes with scroll */}
+          <div className="right-taglines-wrap">
+            <div className="word-line-1 right-sub">Systems that think.</div>
+            <div className="builder-sub right-sub" style={{ opacity: 0, position: "absolute", top: 0 }}>
+              Workflows that scale.
+            </div>
+          </div>
+
+          {/* Tagline */}
+          <div className="right-tagline">
+            <span className="rt-dash">—</span> Ravi Kumar
+          </div>
+
+          {/* Badge */}
+          <div className="right-badge">
+            <span className="rb-dot"></span> Available for Projects
+          </div>
+
         </div>
       </div>
       {children}

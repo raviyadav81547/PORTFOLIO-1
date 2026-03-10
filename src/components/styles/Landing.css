@@ -367,3 +367,198 @@ h2.landing-info-h2 {
   .nl { font-size: 34px; }
   .kumar-row .nl { font-size: 40px; }
 }
+
+
+/* Updated name styles */
+.nl {
+  font-family: "Geist", sans-serif;
+  font-weight: 900;
+  line-height: 1;
+  cursor: default;
+  user-select: none;
+  will-change: transform;
+  display: inline-block;
+  font-size: clamp(52px, 7.5vw, 90px);
+  color: #ffffff;
+  text-shadow:
+    0 0 20px rgba(255,255,255,0.15),
+    2px 2px 0 rgba(255,255,255,0.08),
+    4px 4px 12px rgba(0,0,0,0.6);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+.nl-purple {
+  color: #c481ff;
+  text-shadow:
+    0 0 20px rgba(196,129,255,0.4),
+    0 0 40px rgba(196,129,255,0.2),
+    2px 2px 0 rgba(196,129,255,0.2),
+    4px 4px 12px rgba(0,0,0,0.6);
+}
+.kumar-row .nl { font-size: clamp(58px, 9vw, 100px); }
+.nl:hover { transform: translateY(-12px) scale(1.15) !important; filter: brightness(1.35); }
+/* ═══════════════════════════════════════════
+   RIGHT SIDE — 3D MOTION GRAPHICS REDESIGN
+   Teal-green cinematic style
+═══════════════════════════════════════════ */
+
+/* AN AI label */
+.an-ai-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.an-ai-text {
+  font-family: "Geist", sans-serif;
+  font-size: clamp(14px, 1.5vw, 18px);
+  font-weight: 300;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: #4fffb0;
+  text-shadow: 0 0 12px rgba(79,255,176,0.5);
+}
+.an-ai-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #4fffb0;
+  box-shadow: 0 0 10px #4fffb0, 0 0 20px #4fffb0;
+  animation: dotPulse 1.6s ease-in-out infinite;
+}
+@keyframes dotPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.6); opacity: 0.6; }
+}
+
+/* BIG WORD CLIP — overflow hidden so words slide in/out clean */
+.big-word-clip {
+  position: relative;
+  overflow: hidden;
+  line-height: 0.88;
+  margin-bottom: 8px;
+}
+
+/* THE BIG WORD */
+.big-word {
+  font-family: "Geist", sans-serif;
+  font-weight: 900;
+  font-size: clamp(52px, 7.5vw, 96px);
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  line-height: 0.88;
+  will-change: transform, opacity;
+  /* 3D perspective */
+  transform-style: preserve-3d;
+  perspective: 800px;
+}
+
+/* AUTOMATION — white with 3D depth shadow */
+.bw-auto {
+  color: #ffffff;
+  text-shadow:
+    0px 1px 0px rgba(255,255,255,0.6),
+    0px 2px 0px rgba(200,200,200,0.4),
+    0px 4px 0px rgba(150,150,150,0.2),
+    0px 6px 0px rgba(100,100,100,0.15),
+    0px 8px 20px rgba(0,0,0,0.5),
+    0 0 30px rgba(79,255,176,0.08);
+}
+.bw-mation {
+  color: #4fffb0;
+  text-shadow:
+    0px 1px 0px rgba(79,255,176,0.6),
+    0px 2px 0px rgba(79,255,176,0.3),
+    0px 4px 0px rgba(79,255,176,0.15),
+    0px 6px 20px rgba(0,0,0,0.5),
+    0 0 30px rgba(79,255,176,0.3),
+    0 0 60px rgba(79,255,176,0.15);
+}
+
+/* BUILDER — positioned absolute, slides up on scroll */
+.w-builder {
+  position: absolute;
+  top: 0; left: 0;
+}
+.bw-build {
+  color: #ffffff;
+  text-shadow:
+    0px 1px 0px rgba(255,255,255,0.6),
+    0px 2px 0px rgba(200,200,200,0.4),
+    0px 6px 20px rgba(0,0,0,0.5),
+    0 0 30px rgba(196,129,255,0.08);
+}
+.bw-er {
+  color: #c481ff;
+  text-shadow:
+    0px 1px 0px rgba(196,129,255,0.6),
+    0px 2px 0px rgba(196,129,255,0.3),
+    0px 6px 20px rgba(0,0,0,0.5),
+    0 0 30px rgba(196,129,255,0.4),
+    0 0 60px rgba(196,129,255,0.2);
+}
+
+/* SUB TAGLINES */
+.right-taglines-wrap {
+  position: relative;
+  height: 22px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.right-sub {
+  font-family: "Geist", sans-serif;
+  font-size: clamp(11px, 1.2vw, 14px);
+  font-weight: 300;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+.builder-sub {
+  left: 0;
+}
+
+/* TAGLINE — "— Ravi Kumar" */
+.right-tagline {
+  font-family: "Geist", sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+}
+.rt-dash {
+  color: #4fffb0;
+  margin-right: 6px;
+}
+
+/* AVAILABLE BADGE */
+.right-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  border: 1px solid rgba(79,255,176,0.25);
+  background: rgba(79,255,176,0.05);
+  backdrop-filter: blur(6px);
+  font-family: "Geist", sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+}
+.rb-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #4fffb0;
+  box-shadow: 0 0 8px #4fffb0;
+  animation: dotPulse 1.8s ease-in-out infinite;
+}
+
+/* ── override old landing-info h3/h2 so they don't interfere ── */
+.landing-info > h3 { display: none !important; }
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .big-word { font-size: clamp(38px, 10vw, 60px); }
+  .right-badge { font-size: 9px; }
+}
+

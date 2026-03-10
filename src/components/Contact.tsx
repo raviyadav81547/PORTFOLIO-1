@@ -1,24 +1,25 @@
 import { MdArrowOutward, MdCopyright, MdSend, MdCheckCircle, MdError } from "react-icons/md";
 import {
-  FaInstagram, FaLinkedinIn, FaTelegramPlane,
-  FaYoutube, FaGithub, FaGlobe
+  FaInstagram, FaLinkedinIn, FaYoutube,
+  FaGithub, FaGlobe, FaWhatsapp, FaFacebookF
 } from "react-icons/fa";
+import { FaTelegram } from "react-icons/fa6";
 import "./styles/Contact.css";
 import { useState, useRef, useEffect } from "react";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
-// ── 6 SOCIAL BUBBLES ──
 const SOCIALS = [
-  { icon: FaInstagram,     label: "Instagram", href: "https://instagram.com/",              color: "#E1306C", glow: "#E1306C" },
-  { icon: FaLinkedinIn,    label: "LinkedIn",  href: "https://linkedin.com/in/ravi-kumar",  color: "#0A66C2", glow: "#0A66C2" },
-  { icon: FaTelegramPlane, label: "Telegram",  href: "https://t.me/",                       color: "#229ED9", glow: "#229ED9" },
-  { icon: FaYoutube,       label: "YouTube",   href: "https://youtube.com/",                color: "#FF0000", glow: "#FF0000" },
-  { icon: FaGithub,        label: "GitHub",    href: "https://github.com/raviyadav81547",   color: "#c481ff", glow: "#c481ff" },
-  { icon: FaGlobe,         label: "Website",   href: "https://tapautomate.in",              color: "#39D353", glow: "#39D353" },
+  { icon: FaWhatsapp,   label: "WhatsApp",  href: "https://wa.me/917497817064",            color: "#25D366", glow: "#25D366" },
+  { icon: FaInstagram,  label: "Instagram", href: "https://instagram.com/",                 color: "#E1306C", glow: "#E1306C" },
+  { icon: FaLinkedinIn, label: "LinkedIn",  href: "https://linkedin.com/in/ravi-kumar",     color: "#0A66C2", glow: "#0A66C2" },
+  { icon: FaTelegram,   label: "Telegram",  href: "https://t.me/",                          color: "#229ED9", glow: "#229ED9" },
+  { icon: FaYoutube,    label: "YouTube",   href: "https://youtube.com/",                   color: "#FF0000", glow: "#FF0000" },
+  { icon: FaGithub,     label: "GitHub",    href: "https://github.com/raviyadav81547",      color: "#c481ff", glow: "#c481ff" },
+  { icon: FaFacebookF,  label: "Facebook",  href: "https://facebook.com/",                  color: "#1877F2", glow: "#1877F2" },
+  { icon: FaGlobe,      label: "Website",   href: "https://tapautomate.in",                 color: "#39D353", glow: "#39D353" },
 ];
 
-// ── FLOATING BUBBLE COMPONENT ──
 const SocialBubble = ({
   social, index, isVisible
 }: {
@@ -26,12 +27,10 @@ const SocialBubble = ({
   index: number;
   isVisible: boolean;
 }) => {
-  const delays = [0, 0.15, 0.3, 0.45, 0.6, 0.75];
+  const floatDuration = [3.2, 2.8, 3.6, 3.0, 2.6, 3.4, 3.1, 2.9][index];
+  const floatDelay    = [0, 0.5, 1.0, 0.3, 0.8, 0.2, 0.6, 0.4][index];
+  const entryDelay    = index * 0.1;
   const Icon = social.icon;
-
-  // Different float patterns per bubble
-  const floatDuration = [3.2, 2.8, 3.6, 3.0, 2.6, 3.4][index];
-  const floatDelay    = [0, 0.5, 1.0, 0.3, 0.8, 0.2][index];
 
   return (
     <a
@@ -41,21 +40,18 @@ const SocialBubble = ({
       data-cursor="disable"
       className="social-bubble"
       style={{
-        "--bubble-color":    social.color,
-        "--bubble-glow":     social.glow,
-        "--float-duration":  `${floatDuration}s`,
-        "--float-delay":     `${floatDelay}s`,
-        "--entry-delay":     `${delays[index]}s`,
-        opacity:             isVisible ? 1 : 0,
-        transform:           isVisible ? "translateY(0) scale(1)" : "translateY(60px) scale(0.4)",
-        transition:          `opacity 0.6s ease ${delays[index]}s, transform 0.7s cubic-bezier(0.34,1.56,0.64,1) ${delays[index]}s`,
+        "--bubble-color":   social.color,
+        "--bubble-glow":    social.glow,
+        "--float-duration": `${floatDuration}s`,
+        "--float-delay":    `${floatDelay}s`,
+        opacity:            isVisible ? 1 : 0,
+        transform:          isVisible ? "translateY(0) scale(1)" : "translateY(60px) scale(0.4)",
+        transition:         `opacity 0.6s ease ${entryDelay}s, transform 0.7s cubic-bezier(0.34,1.56,0.64,1) ${entryDelay}s`,
       } as React.CSSProperties}
     >
       <div className="bubble-sphere">
         <div className="bubble-shine" />
-        <div className="bubble-icon">
-          <Icon />
-        </div>
+        <div className="bubble-icon"><Icon /></div>
         <div className="bubble-ring" />
       </div>
       <span className="bubble-label">{social.label}</span>
@@ -69,11 +65,10 @@ const Contact = () => {
   const [visible, setVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  // Intersection observer — trigger bubble entry
   useEffect(() => {
     const obs = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) setVisible(true); },
-      { threshold: 0.2 }
+      { threshold: 0.15 }
     );
     if (sectionRef.current) obs.observe(sectionRef.current);
     return () => obs.disconnect();

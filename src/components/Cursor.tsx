@@ -30,17 +30,15 @@ const Cursor = () => {
     const particles: Particle[] = [];
     let mx = -200, my = -200;
     let lastX = -200, lastY = -200;
-    let _isMoving = false;
-    let moveTimeout: ReturnType<typeof setTimeout>;
+    let moveTimeout: ReturnType<typeof setTimeout> | undefined;
 
     const COLORS = ["#c481ff", "#9B59B6", "#FF69B4", "#4285F4", "#FFD700", "#39D353"];
 
     document.addEventListener("mousemove", (e) => {
       mx = e.clientX;
       my = e.clientY;
-      _isMoving = true;
       clearTimeout(moveTimeout);
-      moveTimeout = setTimeout(() => { _isMoving = false; }, 100);
+      moveTimeout = setTimeout(() => { moveTimeout = undefined; }, 100);
 
       // Spawn particles based on distance moved
       const dist = Math.hypot(mx - lastX, my - lastY);
