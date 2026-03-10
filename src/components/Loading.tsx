@@ -15,8 +15,8 @@ const Loading = ({ percent }: { percent: number }) => {
       setLoaded(true);
       setTimeout(() => {
         setIsLoaded(true);
-      }, 1000);
-    }, 600);
+      }, 500);
+    }, 300);
   }
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const Loading = ({ percent }: { percent: number }) => {
             module.initialFX();
           }
           setIsLoading(false);
-        }, 900);
+        }, 500);
       }
     });
   }, [isLoaded]);
@@ -95,22 +95,25 @@ export default Loading;
 export const setProgress = (setLoading: (value: number) => void) => {
   let percent: number = 0;
 
+  // Phase 1: 0→70% fast (30ms interval, 3-6% jumps)
   let interval = setInterval(() => {
-    if (percent <= 50) {
-      let rand = Math.round(Math.random() * 5);
-      percent = percent + rand;
+    if (percent < 70) {
+      const rand = Math.round(3 + Math.random() * 3);
+      percent = Math.min(70, percent + rand);
       setLoading(percent);
     } else {
       clearInterval(interval);
+      // Phase 2: 70→92% medium (80ms, 1-2% jumps) — waiting for 3D load
       interval = setInterval(() => {
-        percent = percent + Math.round(Math.random());
-        setLoading(percent);
-        if (percent > 91) {
+        if (percent < 92) {
+          percent = Math.min(92, percent + Math.round(1 + Math.random()));
+          setLoading(percent);
+        } else {
           clearInterval(interval);
         }
-      }, 2000);
+      }, 80);
     }
-  }, 100);
+  }, 30);
 
   function clear() {
     clearInterval(interval);

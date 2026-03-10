@@ -9,73 +9,70 @@ const CHARS = "!<>-_\\/[]{}—=+*^?#ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 const WORDS = ["AI Builder.", "Automation.", "GenAI Dev.", "Problem Solver.", "Creator."];
 
 const Landing = ({ children }: PropsWithChildren) => {
-  const nameRef    = useRef<HTMLDivElement>(null);
-  const typeRef    = useRef<HTMLSpanElement>(null);
-  const rightRef   = useRef<HTMLDivElement>(null);
+  const nameRef  = useRef<HTMLDivElement>(null);
+  const typeRef  = useRef<HTMLSpanElement>(null);
+  const rightRef = useRef<HTMLDivElement>(null);
 
-  // ── PAGE LOAD: NAME DROP ──
+  // ── NAME DROP ON LOAD ──
   useEffect(() => {
     const letters = nameRef.current?.querySelectorAll<HTMLElement>(".nl");
     if (!letters?.length) return;
-    gsap.set(letters, { y: -100, opacity: 0, rotateX: 80, scale: 0.7 });
+    gsap.set(letters, { y: -80, opacity: 0, rotateX: 70, scale: 0.8 });
     gsap.to(letters, {
       y: 0, opacity: 1, rotateX: 0, scale: 1,
-      duration: 0.7, stagger: 0.06, delay: 3.4,
-      ease: "back.out(2)",
+      duration: 0.65, stagger: 0.055, delay: 3.5,
+      ease: "back.out(1.8)",
     });
     letters.forEach((el, i) => {
       gsap.to(el, {
-        y: `+=${2 + i * 0.3}`,
-        duration: 1.8 + i * 0.15,
+        y: `+=${1.5 + i * 0.2}`,
+        duration: 2.0 + i * 0.12,
         repeat: -1, yoyo: true,
-        ease: "sine.inOut", delay: i * 0.2,
+        ease: "sine.inOut", delay: i * 0.18,
       });
     });
   }, []);
 
-  // ── PAGE LOAD: RIGHT SIDE CINEMATIC ENTRY ──
+  // ── RIGHT SIDE ENTRY + SCROLL SWAP ──
   useEffect(() => {
     const el = rightRef.current;
     if (!el) return;
 
-    const anAI    = el.querySelector(".an-ai-line");
-    const line1   = el.querySelector(".word-line-1");
-    const line2   = el.querySelector(".word-line-2");
-    const tagline = el.querySelector(".right-tagline");
-    const badge   = el.querySelector(".right-badge");
+    const anAI  = el.querySelector(".an-ai-line");
+    const wAuto = el.querySelector(".w-automation");
+    const wBuild = el.querySelector(".w-builder");
+    const sub   = el.querySelector(".right-sub");
+    const badge = el.querySelector(".right-badge");
 
-    // Set initial states
-    gsap.set(anAI,    { x: -60, opacity: 0 });
-    gsap.set(line1,   { y: 80, opacity: 0, rotateX: 45, skewX: -8 });
-    gsap.set(line2,   { y: 80, opacity: 0, rotateX: 45, skewX: -8 });
-    gsap.set(tagline, { x: 40, opacity: 0 });
-    gsap.set(badge,   { scale: 0, opacity: 0, rotation: -15 });
+    // Initial hidden
+    gsap.set([anAI, sub, badge], { opacity: 0, y: 20 });
+    gsap.set(wAuto,  { opacity: 0, y: 60, rotateX: 40, skewX: -6 });
+    gsap.set(wBuild, { opacity: 0, y: 60 });
 
+    // Entry animation after loading screen
     const tl = gsap.timeline({ delay: 3.8 });
+    tl.to(anAI,  { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" })
+      .to(wAuto, { opacity: 1, y: 0, rotateX: 0, skewX: 0, duration: 0.65, ease: "expo.out" }, "-=0.1")
+      .to(sub,   { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, "-=0.2")
+      .to(badge, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(2)" }, "-=0.1");
 
-    tl.to(anAI,    { x: 0, opacity: 1, duration: 0.6, ease: "power3.out" })
-      .to(line1,   { y: 0, opacity: 1, rotateX: 0, skewX: 0, duration: 0.7, ease: "expo.out" }, "-=0.2")
-      .to(line2,   { y: 0, opacity: 1, rotateX: 0, skewX: 0, duration: 0.7, ease: "expo.out" }, "-=0.5")
-      .to(tagline, { x: 0, opacity: 1, duration: 0.5, ease: "power2.out" }, "-=0.3")
-      .to(badge,   { scale: 1, opacity: 1, rotation: 0, duration: 0.5, ease: "back.out(2)" }, "-=0.2");
-
-    // ── SCROLL: AUTOMATION → BUILDER swap ──
-    gsap.set(".w-automation", { y: 0, opacity: 1 });
-    gsap.set(".w-builder",    { y: "100%", opacity: 0 });
+    // Scroll: AUTOMATION out → BUILDER in
+    gsap.set(wBuild, { yPercent: 100, opacity: 0 });
 
     const st = gsap.timeline({
       scrollTrigger: {
         trigger: ".landing-section",
-        start: "15% top", end: "55% top",
-        scrub: 1.2,
+        start: "10% top",
+        end: "50% top",
+        scrub: 1.5,
       },
     });
-    st.to(".w-automation",  { y: "-110%", opacity: 0, duration: 1 }, 0)
-      .to(".an-ai-line",    { y: "-30px", opacity: 0, duration: 0.8 }, 0)
-      .fromTo(".w-builder", { y: "110%", opacity: 0 },
-                            { y: "0%", opacity: 1, duration: 1 }, 0.1)
-      .fromTo(".builder-sub",{ y: "30px", opacity: 0 },
-                             { y: "0", opacity: 1, duration: 0.8 }, 0.2);
+    st.to(wAuto,  { yPercent: -110, opacity: 0, ease: "none" }, 0)
+      .to(anAI,   { y: -20, opacity: 0, ease: "none" }, 0)
+      .to(sub,    { opacity: 0, ease: "none" }, 0)
+      .fromTo(wBuild,
+        { yPercent: 110, opacity: 0 },
+        { yPercent: 0,   opacity: 1, ease: "none" }, 0.05);
 
     return () => { tl.kill(); st.kill(); };
   }, []);
@@ -139,7 +136,7 @@ const Landing = ({ children }: PropsWithChildren) => {
 
         {/* ── LEFT: NAME ── */}
         <div className="landing-intro">
-          <h2 className="hello-text">Hello! I'm</h2>
+          <p className="hello-text">Hello! I'm</p>
           <div className="name-wrap" ref={nameRef}>
             <div className="name-row">
               {"RAVI".split("").map((c, i) => (
@@ -148,7 +145,7 @@ const Landing = ({ children }: PropsWithChildren) => {
             </div>
             <div className="name-row kumar-row">
               {"KUMAR".split("").map((c, i) => (
-                <span key={i} className="nl nl-purple" data-char={c}>{c}</span>
+                <span key={i} className="nl nl-accent" data-char={c}>{c}</span>
               ))}
             </div>
           </div>
@@ -163,42 +160,29 @@ const Landing = ({ children }: PropsWithChildren) => {
           </div>
         </div>
 
-        {/* ── RIGHT: 3D MOTION TEXT ── */}
+        {/* ── RIGHT: BIG WORDS ── */}
         <div className="landing-info" ref={rightRef}>
 
-          {/* "An AI" label */}
           <div className="an-ai-line">
-            <span className="an-ai-text">An AI</span>
             <span className="an-ai-dot"></span>
+            <span className="an-ai-text">An AI</span>
           </div>
 
-          {/* AUTOMATION word — clips and scrolls out */}
+          {/* Clip wrapper — words slide in/out without overflow */}
           <div className="big-word-clip">
             <div className="w-automation big-word">
-              <span className="bw-auto">AUTO</span><span className="bw-mation">MATION</span>
+              <span className="bw-white">AUTO</span><span className="bw-teal">MATION</span>
             </div>
-            {/* BUILDER slides up on scroll */}
             <div className="w-builder big-word">
-              <span className="bw-build">BUILD</span><span className="bw-er">ER</span>
+              <span className="bw-white">BUILD</span><span className="bw-purple">ER</span>
             </div>
           </div>
 
-          {/* Sub tagline — changes with scroll */}
-          <div className="right-taglines-wrap">
-            <div className="word-line-1 right-sub">Systems that think.</div>
-            <div className="builder-sub right-sub" style={{ opacity: 0, position: "absolute", top: 0 }}>
-              Workflows that scale.
-            </div>
-          </div>
+          <p className="right-sub">Systems that think. Workflows that scale.</p>
 
-          {/* Tagline */}
-          <div className="right-tagline">
-            <span className="rt-dash">—</span> Ravi Kumar
-          </div>
-
-          {/* Badge */}
           <div className="right-badge">
-            <span className="rb-dot"></span> Available for Projects
+            <span className="rb-dot"></span>
+            Available for Projects
           </div>
 
         </div>

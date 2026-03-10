@@ -272,3 +272,11 @@ a:not([data-cursor="disable"]):not(.navbar-title):not(.navbar-connect):hover {
   margin-bottom: 8px;
   display: block;
 }
+
+/* ── CHARACTER OVERLAP FIX ── */
+/* Character model only shows during landing viewport */
+#smooth-content .container-main > *:not(.landing-section) {
+  position: relative;
+  z-index: 10;
+  background-color: var(--backgroundColor);
+}

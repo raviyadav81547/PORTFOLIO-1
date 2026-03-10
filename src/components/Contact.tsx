@@ -1,4 +1,4 @@
-import { MdArrowOutward, MdCopyright, MdSend, MdCheckCircle, MdError } from "react-icons/md";
+import { MdSend, MdCheckCircle, MdError } from "react-icons/md";
 import {
   FaInstagram, FaLinkedinIn, FaYoutube,
   FaGithub, FaGlobe, FaWhatsapp, FaFacebookF
@@ -110,22 +110,18 @@ const Contact = () => {
       <div className="contact-container">
         <h3>Contact</h3>
 
-        <div className="contact-flex">
-          <div className="contact-box">
-            <h4>Email</h4>
-            <p><a href="mailto:collabxravi@gmail.com" data-cursor="disable">collabxravi@gmail.com</a></p>
-            <h4>Phone</h4>
-            <p><a href="tel:+917497817064" data-cursor="disable">+91 74978 17064</a></p>
+        <div className="contact-top-info">
+          <div className="cti-item">
+            <span className="cti-label">Email</span>
+            <a href="mailto:collabxravi@gmail.com" data-cursor="disable" className="cti-val">collabxravi@gmail.com</a>
           </div>
-          <div className="contact-box">
-            <h4>Links</h4>
-            <a href="https://github.com/raviyadav81547" target="_blank" data-cursor="disable" className="contact-social">Github <MdArrowOutward /></a>
-            <a href="https://www.linkedin.com/in/ravi-kumar" target="_blank" data-cursor="disable" className="contact-social">Linkedin <MdArrowOutward /></a>
-            <a href="https://www.tapautomate.in" target="_blank" data-cursor="disable" className="contact-social">tapautomate.in <MdArrowOutward /></a>
+          <div className="cti-item">
+            <span className="cti-label">Phone</span>
+            <a href="tel:+917497817064" data-cursor="disable" className="cti-val">+91 74978 17064</a>
           </div>
-          <div className="contact-box">
-            <h2>Designed and Developed <br /> by <span>Ravi Kumar</span></h2>
-            <h5><MdCopyright /> 2025</h5>
+          <div className="cti-item">
+            <span className="cti-label">Website</span>
+            <a href="https://tapautomate.in" target="_blank" data-cursor="disable" className="cti-val">tapautomate.in</a>
           </div>
         </div>
 
