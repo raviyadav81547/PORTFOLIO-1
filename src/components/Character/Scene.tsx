@@ -108,12 +108,18 @@ const Scene = () => {
     const landY    = 0.10;  // bone-space: eye level on face
     let spinZ      = 0;     // accumulate spin
 
-    const { loadCharacter } = setCharacter(scene);
+    const { loadCharacter } = setCharacter(renderer, scene, camera);
     const light    = setLighting(scene);
     const progress = setProgress(setLoading);
 
+    // Safety: if character takes too long, force complete loading anyway
+    const loadingFallback = setTimeout(() => {
+      progress.loaded().then(() => {});
+    }, 5000);
+
     loadCharacter().then((gltf) => {
-      if (!gltf) return;
+      clearTimeout(loadingFallback);
+      if (!gltf) { progress.loaded().then(() => {}); return; }
 
       const animations = setAnimations(gltf);
       if (hoverDivRef.current) animations.hover(gltf, hoverDivRef.current);
