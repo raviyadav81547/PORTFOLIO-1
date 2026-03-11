@@ -13,49 +13,35 @@ import {
 import setAnimations from "./utils/animationUtils";
 import { setProgress } from "../Loading";
 
-// ✅ lerp — required by handleHeadRotation (6th arg)
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
-// ── CHASMA — spin down from above, land on face ──
 function createGlasses(): THREE.Group {
   const g = new THREE.Group();
-
-  // Size tuned for spine006 bone local space
-  const R = 0.055; // lens radius
-  const T = 0.008; // tube thickness
-
+  const R = 0.055;
+  const T = 0.008;
   const frame = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.92, roughness: 0.08 });
   const lens  = new THREE.MeshPhysicalMaterial({ color: 0x000820, transparent: true, opacity: 0.86, roughness: 0, emissive: 0x001133, emissiveIntensity: 0.25 });
   const glow  = new THREE.MeshBasicMaterial({ color: 0xc481ff, transparent: true, opacity: 0.30 });
 
-  // Left lens
-  const lRim  = new THREE.Mesh(new THREE.TorusGeometry(R, T, 16, 64), frame);
-  lRim.position.x = -R * 2.2; g.add(lRim);
-  const lFill = new THREE.Mesh(new THREE.CircleGeometry(R - T, 48), lens);
-  lFill.position.set(-R * 2.2, 0, 0.001); g.add(lFill);
-  const lGlow = new THREE.Mesh(new THREE.TorusGeometry(R + 0.004, 0.004, 8, 64), glow);
-  lGlow.position.set(-R * 2.2, 0, -0.001); g.add(lGlow);
+  const addLens = (x: number) => {
+    const rim = new THREE.Mesh(new THREE.TorusGeometry(R, T, 16, 64), frame);
+    rim.position.x = x; g.add(rim);
+    const fill = new THREE.Mesh(new THREE.CircleGeometry(R - T, 48), lens);
+    fill.position.set(x, 0, 0.001); g.add(fill);
+    const gl = new THREE.Mesh(new THREE.TorusGeometry(R + 0.004, 0.004, 8, 64), glow);
+    gl.position.set(x, 0, -0.001); g.add(gl);
+  };
+  addLens(-R * 2.2);
+  addLens(R * 2.2);
 
-  // Right lens
-  const rRim  = new THREE.Mesh(new THREE.TorusGeometry(R, T, 16, 64), frame);
-  rRim.position.x = R * 2.2; g.add(rRim);
-  const rFill = new THREE.Mesh(new THREE.CircleGeometry(R - T, 48), lens);
-  rFill.position.set(R * 2.2, 0, 0.001); g.add(rFill);
-  const rGlow = new THREE.Mesh(new THREE.TorusGeometry(R + 0.004, 0.004, 8, 64), glow);
-  rGlow.position.set(R * 2.2, 0, -0.001); g.add(rGlow);
-
-  // Bridge
   const bridge = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, R * 2.0, 8), frame);
   bridge.rotation.z = Math.PI / 2; g.add(bridge);
-
-  // Arms
   [-1, 1].forEach(s => {
     const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.005, 0.003, R * 3.8, 8), frame);
     arm.rotation.z = Math.PI / 2;
     arm.position.set(s * R * 4.1, 0, -R * 0.6);
     g.add(arm);
   });
-
   return g;
 }
 
@@ -88,11 +74,11 @@ const Scene = () => {
     let glasses:      THREE.Group | null = null;
     let glassesFloatT = 0;
     let glassesLanded = false;
-    let dropY = 1.5;   // bone-local units above head
-    const landY = 0.13; // nose bridge resting position
+    let dropY = 1.5;
+    const landY = 0.13;
     let spinZ = 0;
 
-    // ✅ BUG FIX — correct 3 args
+    // ✅ correct 3 args
     const { loadCharacter } = setCharacter(renderer, scene, camera);
     const light    = setLighting(scene);
     const progress = setProgress(setLoading);
@@ -115,9 +101,8 @@ const Scene = () => {
 
       if (headBone) {
         glasses = createGlasses();
-        // Start above head, spin down, land at nose
         glasses.position.set(0, dropY, 0.25);
-        glasses.rotation.x = Math.PI / 2; // face forward
+        glasses.rotation.x = Math.PI / 2;
         headBone.add(glasses);
       }
 
@@ -157,16 +142,9 @@ const Scene = () => {
       requestAnimationFrame(animate);
       const delta = clock.getDelta();
       if (mixer) mixer.update(delta);
-
-      // ✅ BUG FIX — 6 args + lerp
       if (headBone) {
-        handleHeadRotation(
-          headBone, mouse.x, mouse.y,
-          interpolation.x, interpolation.y, lerp
-        );
+        handleHeadRotation(headBone, mouse.x, mouse.y, interpolation.x, interpolation.y, lerp);
       }
-
-      // Chasma drop + spin + land + float
       if (glasses) {
         if (!glassesLanded) {
           dropY += (landY - dropY) * 0.05;
@@ -175,7 +153,7 @@ const Scene = () => {
           glasses.rotation.z = spinZ;
           glasses.rotation.x = Math.PI / 2 + Math.sin(spinZ * 1.5) * 0.1;
           if (Math.abs(dropY - landY) < 0.003) {
-            glassesLanded      = true;
+            glassesLanded = true;
             glasses.position.y = landY;
             glasses.rotation.z = 0;
             glasses.rotation.x = Math.PI / 2;
@@ -187,7 +165,6 @@ const Scene = () => {
           glasses.rotation.z = Math.sin(glassesFloatT * 0.85) * 0.010;
         }
       }
-
       renderer.render(scene, camera);
     };
     animate();
@@ -209,7 +186,8 @@ const Scene = () => {
       clearTimeout(debounce);
       renderer.dispose();
     };
-  }, []);
+  // ✅ FIX: setLoading in dependency array
+  }, [setLoading]);
 
   return (
     <div className="character-model">

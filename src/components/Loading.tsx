@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { useEffect, useState } from "react";
 import "./styles/Loading.css";
 import { useLoading } from "../context/LoadingProvider";
@@ -26,7 +27,8 @@ const Loading = ({ percent }: { percent: number }) => {
         }, 400);
       }
     });
-  }, [isLoaded]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoaded, setIsLoading]);
 
   function handleMouseMove(e: React.MouseEvent<HTMLElement>) {
     const { currentTarget: target } = e;

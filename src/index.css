@@ -280,3 +280,29 @@ a:not([data-cursor="disable"]):not(.navbar-title):not(.navbar-connect):hover {
   z-index: 10;
   background-color: var(--backgroundColor);
 }
+
+/* ══════════════════════════════════════
+   UPGRADE ADDITIONS — no overrides
+══════════════════════════════════════ */
+
+/* ── CHARACTER NEON CUTOUT FIX ── */
+#smooth-content .container-main > *:not(.landing-section) {
+  position: relative;
+  z-index: 10;
+  background-color: var(--backgroundColor);
+}
+
+/* ── SECTION REVEAL ── */
+.section-reveal {
+  opacity: 0; transform: translateY(40px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.section-reveal.in-view { opacity: 1; transform: translateY(0); }
+.split-char { display: inline-block; }
+
+/* ── SECTION DIVIDER ── */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(196,129,255,0.2), transparent);
+  margin: 0 60px;
+}

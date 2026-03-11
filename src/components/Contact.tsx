@@ -1,100 +1,113 @@
-import {
-  FaInstagram, FaLinkedinIn, FaYoutube,
-  FaGithub, FaGlobe, FaWhatsapp, FaFacebookF
-} from "react-icons/fa";
-import { FaTelegram } from "react-icons/fa6";
+import { useRef, useEffect } from "react";
 import "./styles/Contact.css";
-import { useState, useRef, useEffect } from "react";
 
-const SOCIALS = [
-  { icon: FaWhatsapp,   label: "WhatsApp",  href: "https://wa.me/917497817064",        color: "#25D366", glow: "#25D366" },
-  { icon: FaInstagram,  label: "Instagram", href: "https://instagram.com/",             color: "#E1306C", glow: "#E1306C" },
-  { icon: FaLinkedinIn, label: "LinkedIn",  href: "https://linkedin.com/in/ravi-kumar", color: "#0A66C2", glow: "#0A66C2" },
-  { icon: FaTelegram,   label: "Telegram",  href: "https://t.me/",                      color: "#229ED9", glow: "#229ED9" },
-  { icon: FaYoutube,    label: "YouTube",   href: "https://youtube.com/",               color: "#FF0000", glow: "#FF0000" },
-  { icon: FaGithub,     label: "GitHub",    href: "https://github.com/raviyadav81547", color: "#c481ff", glow: "#c481ff" },
-  { icon: FaFacebookF,  label: "Facebook",  href: "https://facebook.com/",              color: "#1877F2", glow: "#1877F2" },
-  { icon: FaGlobe,      label: "Website",   href: "https://tapautomate.in",             color: "#39D353", glow: "#39D353" },
+const CHARS = "!<>-_\\/[]{}—=+*^?#ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@.";
+
+function scrambleText(el: HTMLElement, finalText: string) {
+  let frame = 0;
+  const totalFrames = 24;
+  const tick = () => {
+    el.textContent = finalText
+      .split("")
+      .map((char, i) => {
+        if (frame >= Math.floor((i / finalText.length) * totalFrames * 0.7)) return char;
+        return CHARS[Math.floor(Math.random() * CHARS.length)];
+      })
+      .join("");
+    frame++;
+    if (frame <= totalFrames) requestAnimationFrame(tick);
+    else el.textContent = finalText;
+  };
+  requestAnimationFrame(tick);
+}
+
+const socials = [
+  { label: "WhatsApp",  icon: "💬", href: "https://wa.me/917497817064", color: "#25D366" },
+  { label: "Instagram", icon: "📸", href: "https://instagram.com/ravikumar", color: "#e1306c" },
+  { label: "LinkedIn",  icon: "💼", href: "https://linkedin.com/in/raviyadav81547", color: "#0077b5" },
+  { label: "GitHub",    icon: "🐙", href: "https://github.com/raviyadav81547", color: "#c481ff" },
+  { label: "YouTube",   icon: "🎬", href: "https://youtube.com/@ravikumar", color: "#ff0000" },
+  { label: "Telegram",  icon: "✈️", href: "https://t.me/ravikumar", color: "#29b6f6" },
+  { label: "Website",   icon: "🌐", href: "https://tapautomate.in", color: "#4fffb0" },
+  { label: "Facebook",  icon: "👤", href: "https://facebook.com/ravikumar", color: "#1877f2" },
 ];
 
-const SocialBubble = ({ social, index, isVisible }: {
-  social: typeof SOCIALS[0]; index: number; isVisible: boolean;
-}) => {
-  const floatDuration = [3.2, 2.8, 3.6, 3.0, 2.6, 3.4, 3.1, 2.9][index];
-  const floatDelay    = [0, 0.5, 1.0, 0.3, 0.8, 0.2, 0.6, 0.4][index];
-  const entryDelay    = index * 0.1;
-  const Icon = social.icon;
-  return (
-    <a href={social.href} target="_blank" rel="noopener noreferrer"
-      data-cursor="disable" className="social-bubble"
-      style={{
-        "--bubble-color":   social.color,
-        "--bubble-glow":    social.glow,
-        "--float-duration": `${floatDuration}s`,
-        "--float-delay":    `${floatDelay}s`,
-        opacity:   isVisible ? 1 : 0,
-        transform: isVisible ? "translateY(0) scale(1)" : "translateY(60px) scale(0.4)",
-        transition: `opacity 0.6s ease ${entryDelay}s, transform 0.7s cubic-bezier(0.34,1.56,0.64,1) ${entryDelay}s`,
-      } as React.CSSProperties}
-    >
-      <div className="bubble-sphere">
-        <div className="bubble-shine" />
-        <div className="bubble-icon"><Icon /></div>
-        <div className="bubble-ring" />
-      </div>
-      <span className="bubble-label">{social.label}</span>
-    </a>
-  );
-};
-
 const Contact = () => {
-  const [visible, setVisible] = useState(false);
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const emailRef = useRef<HTMLAnchorElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
-      { threshold: 0.15 }
-    );
-    if (sectionRef.current) obs.observe(sectionRef.current);
-    return () => obs.disconnect();
+    const el = emailRef.current;
+    if (!el) return;
+    const email = "collabxravi@gmail.com";
+    const handleEnter = () => scrambleText(el, email);
+    el.addEventListener("mouseenter", handleEnter);
+    return () => el.removeEventListener("mouseenter", handleEnter);
   }, []);
 
   return (
-    <div className="contact-section section-container" id="contact" ref={sectionRef}>
-      <div className="contact-container">
-        <h3>Contact</h3>
-
-        <div className="contact-top-info">
-          <div className="cti-item">
-            <span className="cti-label">Email</span>
-            <a href="mailto:collabxravi@gmail.com" data-cursor="disable" className="cti-val">collabxravi@gmail.com</a>
-          </div>
-          <div className="cti-item">
-            <span className="cti-label">Phone</span>
-            <a href="tel:+917497817064" data-cursor="disable" className="cti-val">+91 74978 17064</a>
-          </div>
-          <div className="cti-item">
-            <span className="cti-label">Website</span>
-            <a href="https://tapautomate.in" target="_blank" data-cursor="disable" className="cti-val">tapautomate.in</a>
-          </div>
-        </div>
-
-        <div className="social-bubbles-section">
-          <p className="bubbles-hint">Find me on</p>
-          <div className="social-bubbles-wrap">
-            {SOCIALS.map((s, i) => (
-              <SocialBubble key={s.label} social={s} index={i} isVisible={visible} />
-            ))}
-          </div>
-        </div>
-
-        <div className="contact-footer">
-          <span>Designed & Built by <strong>Ravi Kumar</strong> · 2025</span>
-        </div>
-
+    <section ref={sectionRef} className="contact-section section-reveal" id="contact">
+      {/* Aurora borealis background */}
+      <div className="aurora-bg" aria-hidden="true">
+        <div className="aurora-blob aurora-1" />
+        <div className="aurora-blob aurora-2" />
+        <div className="aurora-blob aurora-3" />
+        <div className="aurora-blob aurora-4" />
       </div>
-    </div>
+
+      {/* Constellation dots */}
+      <canvas className="contact-constellation" aria-hidden="true" />
+
+      <div className="contact-inner">
+        <div className="section-label">GET IN TOUCH</div>
+        <h2 className="contact-heading split-heading">
+          <span className="ch-word">Let's</span>
+          <span className="ch-word ch-connect">Connect</span>
+        </h2>
+
+        <a
+          ref={emailRef}
+          href="mailto:collabxravi@gmail.com"
+          className="contact-email"
+        >
+          collabxravi@gmail.com
+        </a>
+
+        {/* Social bubbles */}
+        <div className="social-bubbles">
+          {socials.map((s, i) => (
+            <a
+              key={i}
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="social-bubble"
+              style={{
+                "--bubble-color": s.color,
+                animationDelay: `${i * 0.4}s`,
+              } as React.CSSProperties}
+              aria-label={s.label}
+            >
+              <div
+                className="bubble-sphere"
+                style={{
+                  background: `radial-gradient(circle at 35% 35%, ${s.color}33, ${s.color}11 60%, transparent 100%)`,
+                  boxShadow: `0 0 20px ${s.color}44, inset 0 0 20px ${s.color}11`,
+                  borderColor: `${s.color}33`,
+                }}
+              >
+                <span className="bubble-icon">{s.icon}</span>
+                <div
+                  className="bubble-glint"
+                  style={{ background: `radial-gradient(circle at 30% 25%, ${s.color}88, transparent 60%)` }}
+                />
+              </div>
+              <span className="bubble-label">{s.label}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
 

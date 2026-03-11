@@ -27,33 +27,22 @@ const setLighting = (scene: THREE.Scene) => {
       scene.environmentRotation.set(5.76, 85.85, 1);
     });
 
-  function setPointLight(screenLight: THREE.Object3D) {
-    const material = (screenLight as THREE.Mesh).material as THREE.MeshStandardMaterial;
-    if (material.opacity > 0.9) {
-      pointLight.intensity = (material.emissiveIntensity ?? 0) * 20;
+  // ✅ FIX: replaced `any` with THREE.Mesh | THREE.Object3D
+  function setPointLight(screenLight: THREE.Mesh & { material: THREE.MeshStandardMaterial }) {
+    if (screenLight.material.opacity > 0.9) {
+      pointLight.intensity = screenLight.material.emissiveIntensity * 20;
     } else {
       pointLight.intensity = 0;
     }
   }
+
   const duration = 2;
   const ease = "power2.inOut";
+
   function turnOnLights() {
-    gsap.to(scene, {
-      environmentIntensity: 0.64,
-      duration: duration,
-      ease: ease,
-    });
-    gsap.to(directionalLight, {
-      intensity: 1,
-      duration: duration,
-      ease: ease,
-    });
-    gsap.to(".character-rim", {
-      y: "55%",
-      opacity: 1,
-      delay: 0.2,
-      duration: 2,
-    });
+    gsap.to(scene, { environmentIntensity: 0.64, duration, ease });
+    gsap.to(directionalLight, { intensity: 1, duration, ease });
+    gsap.to(".character-rim", { y: "55%", opacity: 1, delay: 0.2, duration: 2 });
   }
 
   return { setPointLight, turnOnLights };

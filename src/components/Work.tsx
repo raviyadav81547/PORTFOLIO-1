@@ -1,116 +1,118 @@
-import "./styles/Work.css";
-import WorkImage from "./WorkImage";
+import { useRef, useEffect } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import "./styles/Work.css";
 
-gsap.registerPlugin(useGSAP);
+interface Project {
+  id: number;
+  title: string;
+  desc: string;
+  tech: string[];
+  img: string;
+  link?: string;
+}
 
-const projects = [
-  {
-    name: "TapAutomate",
-    cat: "AI Automation Platform",
-    tools: "Flask, Python, GenAI, Cloud Deploy",
-    image: "/images/project01.webp",
-  },
-  {
-    name: "Image & Visual AI",
-    cat: "Brand Creatives System",
-    tools: "Generative AI, Prompt Workflows, Visual AI",
-    image: "/images/project02.webp",
-  },
-  {
-    name: "Video Motion AI",
-    cat: "Content Scaling Engine",
-    tools: "Video AI, Motion Automation, Scaling Pipelines",
-    image: "/images/project03.webp",
-  },
-  {
-    name: "UGC Brand Automation",
-    cat: "Ad Scripting System",
-    tools: "AI Scripting, Performance Creatives, Growth",
-    image: "/images/project04.webp",
-  },
-  {
-    name: "Validation Engine",
-    cat: "Web System",
-    tools: "Flask, Hash Logic, Validation, Python",
-    image: "/images/project05.webp",
-  },
-  {
-    name: "AI Workflow Framework",
-    cat: "GenAI System",
-    tools: "LLMs, Automation, n8n, Prompt Engineering",
-    image: "/images/project06.webp",
-  },
+const projects: Project[] = [
+  { id: 1, title: "TapAutomate", desc: "AI automation platform — intelligent workflows at scale", tech: ["Python", "Flask", "GenAI"], img: "/images/project01.webp", link: "https://tapautomate.in" },
+  { id: 2, title: "Image & Visual AI", desc: "AI-powered image generation and visual processing system", tech: ["Python", "OpenAI", "React"], img: "/images/project02.webp" },
+  { id: 3, title: "Video Motion AI", desc: "Automated video content creation with AI motion graphics", tech: ["Python", "FFmpeg", "AI"], img: "/images/project03.webp" },
+  { id: 4, title: "UGC Brand Automation", desc: "User-generated content automation pipeline for brands", tech: ["Node.js", "AI", "APIs"], img: "/images/project04.webp" },
+  { id: 5, title: "Validation Engine", desc: "Intelligent data validation framework with ML scoring", tech: ["Python", "ML", "Flask"], img: "/images/project05.webp" },
+  { id: 6, title: "AI Workflow Framework", desc: "Modular AI workflow orchestration and task automation", tech: ["Python", "GSAP", "GenAI"], img: "/images/project06.webp" },
 ];
 
 const Work = () => {
-  useGSAP(() => {
-    let translateX: number = 0;
+  const sectionRef = useRef<HTMLElement>(null);
 
-    function setTranslateX() {
-      const box = document.getElementsByClassName("work-box");
-      const rectLeft = document
-        .querySelector(".work-container")!
-        .getBoundingClientRect().left;
-      const rect = box[0].getBoundingClientRect();
-      const parentWidth = box[0].parentElement!.getBoundingClientRect().width;
-      const padding: number =
-        parseInt(window.getComputedStyle(box[0]).padding) / 2;
-      translateX = rect.width * box.length - (rectLeft + parentWidth) + padding;
-    }
+  useEffect(() => {
+    const cards = sectionRef.current?.querySelectorAll<HTMLElement>(".work-card");
+    if (!cards) return;
 
-    setTranslateX();
+    cards.forEach((card) => {
+      const inner = card.querySelector<HTMLElement>(".work-card-inner");
+      const spotlight = card.querySelector<HTMLElement>(".work-spotlight");
+      if (!inner || !spotlight) return;
 
-    const timeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".work-section",
-        start: "top top",
-        end: `+=${translateX}`,
-        scrub: true,
-        pin: true,
-        id: "work",
-      },
+      const handleMove = (e: MouseEvent) => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        const tiltX = (y - 0.5) * -8;
+        const tiltY = (x - 0.5) * 8;
+
+        gsap.to(inner, {
+          rotateX: tiltX,
+          rotateY: tiltY,
+          duration: 0.4,
+          ease: "power2.out",
+          transformPerspective: 900,
+        });
+
+        spotlight.style.background = `radial-gradient(circle at ${x * 100}% ${y * 100}%, rgba(196,129,255,0.12) 0%, transparent 60%)`;
+      };
+
+      const handleLeave = () => {
+        gsap.to(inner, { rotateX: 0, rotateY: 0, duration: 0.6, ease: "back.out(1.5)" });
+        spotlight.style.background = "transparent";
+      };
+
+      const handleEnter = () => {
+        gsap.to(card, { y: -20, duration: 0.4, ease: "back.out(1.5)" });
+      };
+      const handleLeaveCard = () => {
+        gsap.to(card, { y: 0, duration: 0.5, ease: "back.out(1.5)" });
+      };
+
+      card.addEventListener("mousemove", handleMove);
+      card.addEventListener("mouseleave", handleLeave);
+      card.addEventListener("mouseenter", handleEnter);
+      card.addEventListener("mouseleave", handleLeaveCard);
     });
-
-    timeline.to(".work-flex", {
-      x: -translateX,
-      ease: "none",
-    });
-
-    return () => {
-      timeline.kill();
-      ScrollTrigger.getById("work")?.kill();
-    };
   }, []);
 
   return (
-    <div className="work-section" id="work">
-      <div className="work-container section-container">
-        <h2>
-          My <span>Work</span>
-        </h2>
-        <div className="work-flex">
-          {projects.map((project, index) => (
-            <div className="work-box" key={index}>
-              <div className="work-info">
-                <div className="work-title">
-                  <h3>0{index + 1}</h3>
-                  <div>
-                    <h4>{project.name}</h4>
-                    <p>{project.cat}</p>
-                  </div>
-                </div>
-                <h4>Tools and features</h4>
-                <p>{project.tools}</p>
+    <section ref={sectionRef} className="work-section section-reveal" id="work">
+      <div className="section-label">SELECTED WORK</div>
+      <h2 className="split-heading work-heading">My Work</h2>
+
+      <div className="work-grid">
+        {projects.map((project) => (
+          <div key={project.id} className="work-card">
+            <div className="work-card-inner">
+              {/* Spotlight overlay */}
+              <div className="work-spotlight" />
+
+              <div className="work-img-wrap">
+                <img
+                  src={project.img}
+                  alt={project.title}
+                  className="work-img"
+                  loading="lazy"
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                />
               </div>
-              <WorkImage image={project.image} alt={project.name} />
+
+              <div className="work-card-body">
+                <div className="work-card-title">{project.title}</div>
+                <div className="work-card-desc">{project.desc}</div>
+                <div className="work-card-tech">
+                  {project.tech.map((t) => (
+                    <span key={t} className="work-tech-tag">{t}</span>
+                  ))}
+                </div>
+                {project.link && (
+                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="work-card-link">
+                    View Project ↗
+                  </a>
+                )}
+              </div>
+
+              {/* Google TV neon border */}
+              <div className="work-card-border" />
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
-    </div>
+    </section>
   );
 };
 

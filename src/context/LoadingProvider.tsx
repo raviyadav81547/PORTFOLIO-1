@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import {
   createContext,
   PropsWithChildren,
@@ -19,11 +20,8 @@ export const LoadingProvider = ({ children }: PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState(0);
 
-  const value = {
-    isLoading,
-    setIsLoading,
-    setLoading,
-  };
+  const value = { isLoading, setIsLoading, setLoading };
+
   useEffect(() => {}, [loading]);
 
   return (

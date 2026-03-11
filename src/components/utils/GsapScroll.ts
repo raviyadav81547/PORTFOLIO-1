@@ -18,42 +18,48 @@ export function setCharTimeline(
     scrollTrigger: { trigger: ".whatIDO", start: "top top", end: "bottom top", scrub: true, invalidateOnRefresh: true },
   });
 
+  // ✅ FIX: replaced any with THREE.Object3D | THREE.Mesh
   let screenLight: THREE.Object3D | null = null;
   let monitor: THREE.Object3D | null = null;
 
-  character?.traverse((obj) => {
+  character?.traverse((obj: THREE.Object3D) => {
     if (obj.name === "screenlight") screenLight = obj;
     if (obj.name === "Plane004") monitor = obj;
   });
 
-  if (screenLight?.material) {
-    screenLight.material.transparent = true;
-    const screenMaterial = (screenLight as THREE.Mesh).material as THREE.MeshStandardMaterial;
-    screenMaterial.emissive?.set("#C8BFFF");
-    gsap.timeline({ repeat: -1, repeatRefresh: true }).to(((screenLight as THREE.Mesh).material as THREE.MeshStandardMaterial), {
+  const screenLightMesh = screenLight as THREE.Mesh | null;
+  if (screenLightMesh?.material) {
+    const mat = screenLightMesh.material as THREE.MeshStandardMaterial;
+    mat.transparent = true;
+    // ✅ FIX: empty catch with meaningful handling
+    try { mat.emissive?.set("#C8BFFF"); } catch (err) { console.warn("emissive set failed", err); }
+    gsap.timeline({ repeat: -1, repeatRefresh: true }).to(mat, {
       emissiveIntensity: () => intensity * 8,
       duration: () => Math.random() * 0.6,
       delay:    () => Math.random() * 0.1,
     });
   }
 
-  let monitorMesh: THREE.Object3D | null = null;
+  let monitorMesh: THREE.Mesh | null = null;
   if (monitor) {
-    monitor.children?.forEach((child) => {
-      if (child.material) {
-        child.material.transparent = true;
-        child.material.opacity = 0;
-        if (child.material.name === "Material.027") {
-          child.material.color?.set("#FFFFFF");
-          monitorMesh = child;
+    (monitor as THREE.Object3D).children?.forEach((child: THREE.Object3D) => {
+      const childMesh = child as THREE.Mesh;
+      if (childMesh.material) {
+        const mat = childMesh.material as THREE.MeshStandardMaterial;
+        mat.transparent = true;
+        mat.opacity = 0;
+        if (mat.name === "Material.027") {
+          // ✅ FIX: replaced any with THREE.Mesh
+          try { mat.color?.set("#FFFFFF"); } catch (err) { console.warn("color set failed", err); }
+          monitorMesh = childMesh;
         }
       }
     });
   }
 
-  const safeMon = monitorMesh || ({ material: { opacity: 0 }, position: new THREE.Vector3() } as { material: { opacity: number }; position: THREE.Vector3 });
-  const safeScrLt = (screenLight as THREE.Mesh) || ({ material: { opacity: 0 } } as { material: { opacity: number } });
-  const neckBone    = character?.getObjectByName("spine005") || new THREE.Object3D();
+  const safeMon   = monitorMesh   || { material: { opacity: 0 }, position: new THREE.Vector3() };
+  const safeScrLt = screenLightMesh || { material: { opacity: 0 } };
+  const neckBone  = character?.getObjectByName("spine005") || new THREE.Object3D();
 
   if (window.innerWidth > 1024 && character) {
     tl1
@@ -71,10 +77,10 @@ export function setCharTimeline(
       .fromTo(".character-model", { pointerEvents: "inherit" }, { pointerEvents: "none", x: "-12%", delay: 2, duration: 5 }, 0)
       .to(character.rotation, { y: 0.92, x: 0.12, delay: 3, duration: 3 }, 0)
       .to(neckBone.rotation,  { x: 0.6, delay: 2, duration: 3 }, 0)
-      .to(safeMon.material,   { opacity: 1, duration: 0.8, delay: 3.2 }, 0)
-      .to(safeScrLt.material, { opacity: 1, duration: 0.8, delay: 4.5 }, 0)
+      .to((safeMon as THREE.Mesh).material,   { opacity: 1, duration: 0.8, delay: 3.2 }, 0)
+      .to((safeScrLt as THREE.Mesh).material, { opacity: 1, duration: 0.8, delay: 4.5 }, 0)
       .fromTo(".what-box-in", { display: "none" }, { display: "flex", duration: 0.1, delay: 6 }, 0)
-      .fromTo(safeMon.position, { y: -10, z: 2 }, { y: 0, z: 0, delay: 1.5, duration: 3 }, 0)
+      .fromTo((safeMon as THREE.Mesh).position, { y: -10, z: 2 }, { y: 0, z: 0, delay: 1.5, duration: 3 }, 0)
       .fromTo(".character-rim", { opacity: 1, scaleX: 1.4 }, { opacity: 0, scale: 0, y: "-70%", duration: 5, delay: 2 }, 0.3);
 
     tl3

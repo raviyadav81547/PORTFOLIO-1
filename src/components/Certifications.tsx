@@ -1,105 +1,80 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import "./styles/Certifications.css";
 
-const certs = [
-  {
-    id: "google",
-    name: "Google AI Essentials",
-    issuer: "Google",
-    year: "2024",
-    image: "/images/certs/cert_google.webp",
-    color: "#4285F4",
-  },
-  {
-    id: "genai",
-    name: "Gen AI Developer",
-    issuer: "IBM × Microsoft",
-    year: "2025",
-    image: "/images/certs/cert_genai.webp",
-    color: "#c481ff",
-  },
-  {
-    id: "outskill",
-    name: "Generative AI Mastermind",
-    issuer: "Outskill",
-    year: "2025",
-    image: "/images/certs/cert_outskill.webp",
-    color: "#39D353",
-  },
-  {
-    id: "be10x",
-    name: "AI Tools Workshop",
-    issuer: "Be10x",
-    year: "2025",
-    image: "/images/certs/cert_be10x.webp",
-    color: "#FF8C00",
-  },
-  {
-    id: "semrush",
-    name: "AI-Powered Marketer",
-    issuer: "Semrush Academy",
-    year: "2025",
-    image: "/images/certs/cert_semrush.webp",
-    color: "#FF6B35",
-  },
-  {
-    id: "apple",
-    name: "Accredited Creator",
-    issuer: "Apple Creator Studio",
-    year: "2025",
-    image: "/images/certs/cert_apple.webp",
-    color: "#E8E8E8",
-  },
+interface CertCard {
+  name: string;
+  issuer: string;
+  year: string;
+  badge: string;
+  color: string;
+  img?: string;
+}
+
+const certs: CertCard[] = [
+  { name: "Google AI Essentials", issuer: "Google", year: "2024", badge: "G", color: "#4285F4", img: "/images/certs/cert_google.webp" },
+  { name: "Microsoft Azure AI", issuer: "Microsoft", year: "2024", badge: "M", color: "#00a4ef" },
+  { name: "Be10x AI Tools", issuer: "Be10x", year: "2024", badge: "B", color: "#f97316", img: "/images/certs/cert_be10x.webp" },
+  { name: "Prompt Engineering", issuer: "DeepLearning.AI", year: "2024", badge: "DE", color: "#c481ff" },
+  { name: "GenAI Fundamentals", issuer: "Google Cloud", year: "2024", badge: "GO", color: "#34A853", img: "/images/certs/cert_genai.webp" },
+  { name: "AI Automation Pro", issuer: "Coursera", year: "2023", badge: "CO", color: "#0056d3", img: "/images/certs/cert_outskill.webp" },
 ];
 
 const Certifications = () => {
-  const trackRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const cards = trackRef.current?.querySelectorAll<HTMLElement>(".cert-card");
-    if (!cards) return;
-
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          (entry.target as HTMLElement).classList.add("cert-visible");
-        }
-      });
-    }, { threshold: 0.15 });
-
-    cards.forEach((c) => obs.observe(c));
-    return () => obs.disconnect();
-  }, []);
+  const sectionRef = useRef<HTMLElement>(null);
 
   return (
-    <div className="cert-section section-container" id="certifications">
-      <h3 className="cert-heading">Certifications</h3>
-      <p className="cert-sub">Verified credentials & achievements</p>
+    <section ref={sectionRef} className="certifications-section section-reveal" id="certifications">
+      {/* Neural network background */}
+      <canvas className="cert-neural-bg" aria-hidden="true" />
 
-      <div className="cert-grid" ref={trackRef}>
-        {certs.map((c, i) => (
+      <div className="section-label">VERIFIED SKILLS</div>
+      <h2 className="split-heading cert-heading">
+        Certifi<span className="cert-heading-accent">cations</span>
+      </h2>
+      <p className="cert-subtext">
+        Industry-recognized credentials in AI, Cloud &amp; Automation
+      </p>
+
+      <div className="cert-grid">
+        {certs.map((cert, i) => (
           <div
-            key={c.id}
+            key={i}
             className="cert-card"
-            style={{
-              "--cert-color": c.color,
-              "--delay": `${i * 0.1}s`,
-            } as React.CSSProperties}
+            style={{ "--cert-color": cert.color } as React.CSSProperties}
           >
-            <div className="cert-img-wrap">
-              <img src={c.image} alt={c.name} loading="lazy" />
-              <div className="cert-img-overlay" />
+            {/* Neon spinning border */}
+            <div className="cert-card-border" />
+
+            <div className="cert-card-inner">
+              {cert.img ? (
+                <div className="cert-img-wrap">
+                  <img src={cert.img} alt={cert.name} className="cert-img" loading="lazy" />
+                </div>
+              ) : (
+                <div
+                  className="cert-badge"
+                  style={{ background: `${cert.color}22`, borderColor: `${cert.color}44` }}
+                >
+                  <span style={{ color: cert.color }}>{cert.badge}</span>
+                </div>
+              )}
+              <div className="cert-info">
+                <div className="cert-name">{cert.name}</div>
+                <div className="cert-issuer">{cert.issuer}</div>
+              </div>
+              <div className="cert-footer">
+                <div className="cert-verified">
+                  <span className="cert-check">✓</span> Verified
+                </div>
+                <div className="cert-year">{cert.year}</div>
+              </div>
+              {/* Lens flare */}
+              <div className="cert-lens-flare" />
             </div>
-            <div className="cert-info">
-              <span className="cert-issuer">{c.issuer}</span>
-              <h4 className="cert-name">{c.name}</h4>
-              <span className="cert-year">{c.year}</span>
-            </div>
-            <div className="cert-glow" />
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 

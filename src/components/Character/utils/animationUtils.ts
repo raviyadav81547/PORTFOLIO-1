@@ -3,8 +3,8 @@ import { GLTF } from "three-stdlib";
 import { eyebrowBoneNames, typingBoneNames } from "../../../data/boneData";
 
 const setAnimations = (gltf: GLTF) => {
-  const character = gltf.scene;
-  const mixer = new THREE.AnimationMixer(character);
+  let character = gltf.scene;
+  let mixer = new THREE.AnimationMixer(character);
   if (gltf.animations) {
     const introClip = gltf.animations.find(
       (clip) => clip.name === "introAnimation"
@@ -45,7 +45,7 @@ const setAnimations = (gltf: GLTF) => {
     }, 2500);
   }
   function hover(gltf: GLTF, hoverDiv: HTMLDivElement) {
-    const eyeBrowUpAction = createBoneAction(
+    let eyeBrowUpAction = createBoneAction(
       gltf,
       mixer,
       "browup",
