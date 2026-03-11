@@ -140,7 +140,7 @@
 .nl {
   font-family: "Geist", sans-serif;
   font-weight: 900;
-  font-size: clamp(54px, 7.8vw, 92px);
+  font-size: clamp(44px, 5.8vw, 72px);
   line-height: 0.9;
   display: inline-block;
   cursor: default;
@@ -202,6 +202,8 @@
   transform: translate(0%, -50%);
   z-index: 10;
   text-align: left;
+  max-width: 34vw;
+  overflow: hidden;
 }
 
 /* AN AI label */
@@ -234,7 +236,7 @@
 .big-word-clip {
   position: relative;
   overflow: hidden;
-  height: clamp(55px, 8.5vw, 100px);
+  height: clamp(42px, 6.5vw, 82px);
   margin-bottom: 12px;
 }
 
@@ -242,7 +244,7 @@
 .big-word {
   font-family: "Geist", sans-serif;
   font-weight: 900;
-  font-size: clamp(52px, 8vw, 96px);
+  font-size: clamp(40px, 5.8vw, 76px);
   text-transform: uppercase;
   letter-spacing: -1px;
   line-height: 0.9;
@@ -338,12 +340,13 @@
 }
 @media screen and (min-width: 1200px) {
   .landing-intro { right: 70%; }
-  .landing-info  { left: 70%; }
+  .landing-info  { left: 68%; max-width: 30vw; }
 }
 @media screen and (min-width: 1600px) {
   .nl { font-size: clamp(70px, 5.5vw, 100px); }
-  .big-word { font-size: clamp(72px, 6.5vw, 110px); }
-  .big-word-clip { height: clamp(65px, 7vw, 100px); }
+  .big-word { font-size: clamp(52px, 5.2vw, 82px); }
+  .big-word-clip { height: clamp(55px, 5.8vw, 86px); }
+  .nl { font-size: clamp(52px, 4.5vw, 72px); }
 }
 
 /* ══════════════════════════════════════
