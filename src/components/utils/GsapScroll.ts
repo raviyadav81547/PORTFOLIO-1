@@ -18,27 +18,28 @@ export function setCharTimeline(
     scrollTrigger: { trigger: ".whatIDO", start: "top top", end: "bottom top", scrub: true, invalidateOnRefresh: true },
   });
 
-  let screenLight: any = null;
-  let monitor: any = null;
+  let screenLight: THREE.Object3D | null = null;
+  let monitor: THREE.Object3D | null = null;
 
-  character?.traverse((obj: any) => {
+  character?.traverse((obj) => {
     if (obj.name === "screenlight") screenLight = obj;
     if (obj.name === "Plane004") monitor = obj;
   });
 
   if (screenLight?.material) {
     screenLight.material.transparent = true;
-    try { screenLight.material.emissive?.set("#C8BFFF"); } catch(e) {}
-    gsap.timeline({ repeat: -1, repeatRefresh: true }).to(screenLight.material, {
+    const screenMaterial = (screenLight as THREE.Mesh).material as THREE.MeshStandardMaterial;
+    screenMaterial.emissive?.set("#C8BFFF");
+    gsap.timeline({ repeat: -1, repeatRefresh: true }).to(((screenLight as THREE.Mesh).material as THREE.MeshStandardMaterial), {
       emissiveIntensity: () => intensity * 8,
       duration: () => Math.random() * 0.6,
       delay:    () => Math.random() * 0.1,
     });
   }
 
-  let monitorMesh: any = null;
+  let monitorMesh: THREE.Object3D | null = null;
   if (monitor) {
-    monitor.children?.forEach((child: any) => {
+    monitor.children?.forEach((child) => {
       if (child.material) {
         child.material.transparent = true;
         child.material.opacity = 0;
@@ -50,8 +51,8 @@ export function setCharTimeline(
     });
   }
 
-  const safeMon     = monitorMesh     || { material: { opacity: 0 }, position: new THREE.Vector3() };
-  const safeScrLt   = screenLight     || { material: { opacity: 0 } };
+  const safeMon = monitorMesh || ({ material: { opacity: 0 }, position: new THREE.Vector3() } as { material: { opacity: number }; position: THREE.Vector3 });
+  const safeScrLt = (screenLight as THREE.Mesh) || ({ material: { opacity: 0 } } as { material: { opacity: number } });
   const neckBone    = character?.getObjectByName("spine005") || new THREE.Object3D();
 
   if (window.innerWidth > 1024 && character) {
