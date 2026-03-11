@@ -209,7 +209,7 @@ const Scene = () => {
       clearTimeout(debounce);
       renderer.dispose();
     };
-  }, []);
+  }, [setLoading]);
 
   return (
     <div className="character-model">

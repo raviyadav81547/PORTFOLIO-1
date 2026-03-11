@@ -1,0 +1,13 @@
+
+> ravi-kumar-portfolio@0.0.0 dev
+> vite --host
+
+
+  VITE v5.4.21  ready in 308 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+3:55:33 PM [vite] hmr update /src/components/Loading.tsx
+3:55:34 PM [vite] hmr update /src/components/Loading.tsx
+3:58:54 PM [vite] hmr update /src/context/LoadingProvider.tsx
+3:58:55 PM [vite] hmr update /src/context/LoadingProvider.tsx

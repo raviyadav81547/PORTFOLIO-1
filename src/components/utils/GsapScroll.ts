@@ -18,17 +18,19 @@ export function setCharTimeline(
     scrollTrigger: { trigger: ".whatIDO", start: "top top", end: "bottom top", scrub: true, invalidateOnRefresh: true },
   });
 
-  let screenLight: any = null;
-  let monitor: any = null;
+  let screenLight: THREE.Mesh | null = null;
+  let monitor: THREE.Object3D | null = null;
 
-  character?.traverse((obj: any) => {
-    if (obj.name === "screenlight") screenLight = obj;
+  character?.traverse((obj: THREE.Object3D) => {
+    if (obj.name === "screenlight") screenLight = obj as THREE.Mesh;
     if (obj.name === "Plane004") monitor = obj;
   });
 
   if (screenLight?.material) {
     screenLight.material.transparent = true;
-    try { screenLight.material.emissive?.set("#C8BFFF"); } catch(e) {}
+    try { screenLight.material.emissive?.set("#C8BFFF"); } catch {
+      // ignore
+    }
     gsap.timeline({ repeat: -1, repeatRefresh: true }).to(screenLight.material, {
       emissiveIntensity: () => intensity * 8,
       duration: () => Math.random() * 0.6,
@@ -36,15 +38,17 @@ export function setCharTimeline(
     });
   }
 
-  let monitorMesh: any = null;
+  let monitorMesh: THREE.Mesh | null = null;
   if (monitor) {
-    monitor.children?.forEach((child: any) => {
-      if (child.material) {
-        child.material.transparent = true;
-        child.material.opacity = 0;
-        if (child.material.name === "Material.027") {
-          child.material.color?.set("#FFFFFF");
-          monitorMesh = child;
+    monitor.children?.forEach((child: THREE.Object3D) => {
+      const meshChild = child as THREE.Mesh;
+      if (meshChild.material) {
+        const material = meshChild.material as THREE.MeshStandardMaterial;
+        material.transparent = true;
+        material.opacity = 0;
+        if (material.name === "Material.027") {
+          material.color?.set("#FFFFFF");
+          monitorMesh = meshChild;
         }
       }
     });

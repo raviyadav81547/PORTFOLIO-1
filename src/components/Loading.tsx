@@ -26,7 +26,7 @@ const Loading = ({ percent }: { percent: number }) => {
         }, 400);
       }
     });
-  }, [isLoaded]);
+  }, [isLoaded, setIsLoading]);
 
   function handleMouseMove(e: React.MouseEvent<HTMLElement>) {
     const { currentTarget: target } = e;
@@ -76,6 +76,7 @@ const Loading = ({ percent }: { percent: number }) => {
 
 export default Loading;
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const setProgress = (setLoading: (value: number) => void) => {
   let percent = 0;
 
