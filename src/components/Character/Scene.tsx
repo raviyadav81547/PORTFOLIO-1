@@ -13,17 +13,14 @@ import {
 import setAnimations from "./utils/animationUtils";
 import { setProgress } from "../Loading";
 
-// ✅ FIX 1 — lerp function (required by handleHeadRotation)
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
-// ── CHASMA — 360 spin se upar se land karta hai ──
 function createGlasses(): THREE.Group {
   const glasses = new THREE.Group();
   const S = 0.20;
   const frameMat = new THREE.MeshStandardMaterial({ color: 0x050505, metalness: 0.95, roughness: 0.05 });
   const lensMat  = new THREE.MeshPhysicalMaterial({ color: 0x000011, transparent: true, opacity: 0.92, roughness: 0, emissive: 0x001133, emissiveIntensity: 0.2 });
   const glowMat  = new THREE.MeshBasicMaterial({ color: 0xc481ff, transparent: true, opacity: 0.22 });
-
   const leftRim  = new THREE.Mesh(new THREE.TorusGeometry(S*0.70, S*0.07, 20, 80), frameMat);
   leftRim.position.set(-S*1.2, 0, 0); glasses.add(leftRim);
   const leftFill = new THREE.Mesh(new THREE.CircleGeometry(S*0.63, 60), lensMat);
@@ -78,12 +75,10 @@ const Scene = () => {
     const landY = 0.10;
     let spinZ = 0;
 
-    // ✅ FIX 2 — sahi 3 args: renderer, scene, camera
     const { loadCharacter } = setCharacter(renderer, scene, camera);
     const light    = setLighting(scene);
     const progress = setProgress(setLoading);
 
-    // 8s fallback — loading kabhi stuck nahi hoga
     const fallbackTimer = setTimeout(() => {
       progress.loaded().then(() => {});
     }, 8000);
@@ -95,17 +90,14 @@ const Scene = () => {
       const animations = setAnimations(gltf);
       if (hoverDivRef.current) animations.hover(gltf, hoverDivRef.current);
       mixer = animations.mixer;
-
       const char = gltf.scene;
       scene.add(char);
 
-      // Head bone — mouse tracking ke liye
       headBone = char.getObjectByName("spine006")
         || char.getObjectByName("Head")
         || char.getObjectByName("head")
         || null;
 
-      // Chasma — head bone pe attach karo
       if (headBone) {
         glasses = createGlasses();
         glasses.position.set(0, dropY, 0.18);
@@ -127,10 +119,8 @@ const Scene = () => {
 
     let mouse = { x: 0, y: 0 };
     let interpolation = { x: 0.1, y: 0.2 };
-
     const onMouseMove = (e: MouseEvent) =>
       handleMouseMove(e, (x, y) => (mouse = { x, y }));
-
     let debounce: number | undefined;
     const onTouchStart = (e: TouchEvent) => {
       const el = e.target as HTMLElement;
@@ -150,20 +140,10 @@ const Scene = () => {
     const animate = () => {
       requestAnimationFrame(animate);
       const delta = clock.getDelta();
-
       if (mixer) mixer.update(delta);
-
-      // ✅ FIX 3 — 6 args + lerp
       if (headBone) {
-        handleHeadRotation(
-          headBone,
-          mouse.x, mouse.y,
-          interpolation.x, interpolation.y,
-          lerp
-        );
+        handleHeadRotation(headBone, mouse.x, mouse.y, interpolation.x, interpolation.y, lerp);
       }
-
-      // Chasma drop + float
       if (glasses) {
         if (!glassesLanded) {
           dropY += (landY - dropY) * 0.045;
@@ -172,7 +152,7 @@ const Scene = () => {
           glasses.rotation.z = spinZ;
           glasses.rotation.x = Math.PI * 0.5 + Math.sin(spinZ * 1.5) * 0.06;
           if (Math.abs(dropY - landY) < 0.004) {
-            glassesLanded      = true;
+            glassesLanded = true;
             glasses.position.y = landY;
             glasses.rotation.z = 0;
             glasses.rotation.x = Math.PI * 0.5;
@@ -184,7 +164,6 @@ const Scene = () => {
           glasses.rotation.z = Math.sin(glassesFloatT * 0.9) * 0.012;
         }
       }
-
       renderer.render(scene, camera);
     };
     animate();

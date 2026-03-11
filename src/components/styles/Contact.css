@@ -480,3 +480,22 @@ a.contact-social:hover {
 
 /* Hide old contact-flex if it exists */
 .contact-flex { display: none !important; }
+
+/* ── FOOTER ── */
+.contact-footer {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  font-size: 12px;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.contact-footer strong { color: rgba(196,129,255,0.6); }
+
+/* ── TOP INFO ── */
+.contact-top-info { display: flex; gap: 40px; margin-bottom: 40px; flex-wrap: wrap; }
+.cti-item { display: flex; flex-direction: column; gap: 4px; }
+.cti-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.25); }
+.cti-val { font-size: 14px; color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.2s ease; }
+.cti-val:hover { color: #c481ff; }
