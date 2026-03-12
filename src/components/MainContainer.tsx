@@ -32,36 +32,43 @@ const MainContainer = ({ children }: PropsWithChildren) => {
     return () => window.removeEventListener("resize", resizeHandler);
   }, [isDesktopView]);
 
-  // Scroll progress bar
+  // ── SCROLL PROGRESS BAR ──
   useEffect(() => {
     const bar = document.createElement("div");
     bar.className = "scroll-indicator";
     bar.style.width = "0%";
     document.body.appendChild(bar);
     const onScroll = () => {
-      const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
       bar.style.width = pct + "%";
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => { window.removeEventListener("scroll", onScroll); bar.remove(); };
   }, []);
 
-  // Section reveals
+  // ── SCROLL REVEAL ──
   useEffect(() => {
+    const revealEls = document.querySelectorAll(".reveal-up");
     const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => {
-        if (e.isIntersecting) (e.target as HTMLElement).classList.add("in-view");
-      }),
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).classList.add("in-view");
+          }
+        });
+      },
       { threshold: 0.1 }
     );
-    document.querySelectorAll(".reveal-up, .section-reveal").forEach((el) => io.observe(el));
+    revealEls.forEach((el) => io.observe(el));
     return () => io.disconnect();
   }, []);
 
-  // 3D card tilt
+  // ── 3D CARD TILT ──
   useEffect(() => {
     const addTilt = () => {
-      document.querySelectorAll<HTMLElement>(".work-box, .work-card").forEach((card) => {
+      document.querySelectorAll<HTMLElement>(".work-box").forEach((card) => {
         card.addEventListener("mousemove", (e) => {
           const r = card.getBoundingClientRect();
           const x = (e.clientX - r.left) / r.width - 0.5;
@@ -75,33 +82,15 @@ const MainContainer = ({ children }: PropsWithChildren) => {
     return () => clearTimeout(t);
   }, []);
 
-  // Tab title when inactive
-  useEffect(() => {
-    const original = document.title;
-    const handler = () => {
-      document.title = document.hidden
-        ? "👋 Come back — Ravi's portfolio misses you"
-        : original;
-    };
-    document.addEventListener("visibilitychange", handler);
-    return () => { document.removeEventListener("visibilitychange", handler); document.title = original; };
-  }, []);
-
   return (
     <div className="container-main">
-      {/* Film grain overlay */}
-      <div className="film-grain" aria-hidden="true" />
-
       <Cursor />
       <Navbar />
       <SocialIcons />
-
       {isDesktopView && children}
-
       <div id="smooth-wrapper">
         <div id="smooth-content">
           <div className="container-main">
-            {/* ✅ character passes through as children on mobile */}
             <Landing>{!isDesktopView && children}</Landing>
             <About />
             <WhatIDo />
