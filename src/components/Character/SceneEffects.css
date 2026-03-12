@@ -1,0 +1,243 @@
+/* ============================================================
+   SCENE EFFECTS — orbit rings, particles, hex, lightning,
+   back glow, ground glow, border ring, scanline
+   ============================================================ */
+
+/* ── ALL OVERLAYS wrapper ── */
+.sce-overlays {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.sce-overlays--on { opacity: 1; }
+
+/* ── HEX GRID canvas ── */
+.sce-hex-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.7;
+}
+
+/* ────────────────────────────────────────
+   NEON ORBIT RINGS
+──────────────────────────────────────── */
+.sce-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  transform: translate(-50%, -55%);
+  border: 1px solid;
+  pointer-events: none;
+}
+/* Dot on each ring */
+.sce-odot {
+  position: absolute;
+  border-radius: 50%;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Ring 1 — purple, large, slow */
+.sce-o1 {
+  width: clamp(280px, 38vw, 580px);
+  height: clamp(280px, 38vw, 580px);
+  border-color: rgba(180,79,255,0.22);
+  box-shadow: 0 0 18px rgba(180,79,255,0.08) inset;
+  animation: orbitSpin1 22s linear infinite;
+}
+.sce-o1 .sce-odot {
+  width: 9px; height: 9px;
+  background: #c481ff;
+  box-shadow: 0 0 12px #c481ff, 0 0 28px rgba(196,129,255,0.7);
+}
+
+/* Ring 2 — blue, medium, reverse */
+.sce-o2 {
+  width: clamp(200px, 26vw, 420px);
+  height: clamp(200px, 26vw, 420px);
+  border-color: rgba(0,200,255,0.18);
+  box-shadow: 0 0 14px rgba(0,200,255,0.06) inset;
+  animation: orbitSpin1 14s linear infinite reverse;
+}
+.sce-o2 .sce-odot {
+  width: 7px; height: 7px; top: -4px;
+  background: #00c8ff;
+  box-shadow: 0 0 10px #00c8ff, 0 0 22px rgba(0,200,255,0.6);
+}
+
+/* Ring 3 — green, small, fast */
+.sce-o3 {
+  width: clamp(130px, 16vw, 270px);
+  height: clamp(130px, 16vw, 270px);
+  border-color: rgba(79,255,176,0.15);
+  box-shadow: 0 0 10px rgba(79,255,176,0.05) inset;
+  animation: orbitSpin1 8s linear infinite;
+}
+.sce-o3 .sce-odot {
+  width: 5px; height: 5px; top: -3px;
+  background: #4fffb0;
+  box-shadow: 0 0 8px #4fffb0, 0 0 18px rgba(79,255,176,0.6);
+}
+
+@keyframes orbitSpin1 {
+  from { transform: translate(-50%,-55%) rotate(0deg); }
+  to   { transform: translate(-50%,-55%) rotate(360deg); }
+}
+
+/* ────────────────────────────────────────
+   BACK GLOW (behind character)
+──────────────────────────────────────── */
+.sce-backglow {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(200px, 35vw, 480px);
+  height: clamp(200px, 35vw, 480px);
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse,
+    rgba(180,79,255,0.18) 0%,
+    rgba(0,200,255,0.10) 40%,
+    transparent 70%
+  );
+  filter: blur(28px);
+  z-index: 0;
+  animation: backGlowPulse 4s ease-in-out infinite alternate;
+}
+@keyframes backGlowPulse {
+  from { opacity: 0.6; transform: translateX(-50%) scale(0.92); }
+  to   { opacity: 1;   transform: translateX(-50%) scale(1.08); }
+}
+
+/* ────────────────────────────────────────
+   GROUND GLOW
+──────────────────────────────────────── */
+.sce-groundglow {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(120px, 22vw, 320px);
+  height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse,
+    rgba(0,200,255,0.45) 0%,
+    rgba(180,79,255,0.25) 50%,
+    transparent 75%
+  );
+  filter: blur(14px);
+  animation: groundPulse 2.2s ease-in-out infinite alternate;
+}
+@keyframes groundPulse {
+  from { opacity: 0.5; width: clamp(100px,18vw,260px); }
+  to   { opacity: 1;   width: clamp(140px,26vw,380px); }
+}
+
+/* ────────────────────────────────────────
+   NEON BORDER RING (glowing circle frame)
+──────────────────────────────────────── */
+.sce-borderring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -52%);
+  width: clamp(260px, 34vw, 530px);
+  height: clamp(260px, 34vw, 530px);
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  background: linear-gradient(#0b080c,#0b080c) padding-box,
+    conic-gradient(
+      from 0deg,
+      rgba(196,129,255,0),
+      rgba(196,129,255,0.6) 25%,
+      rgba(0,200,255,0.6) 50%,
+      rgba(79,255,176,0.6) 75%,
+      rgba(196,129,255,0)
+    ) border-box;
+  animation: borderSpin 8s linear infinite;
+  pointer-events: none;
+}
+@keyframes borderSpin {
+  from { --angle: 0deg; transform: translate(-50%,-52%) rotate(0deg); }
+  to   { transform: translate(-50%,-52%) rotate(360deg); }
+}
+
+/* ────────────────────────────────────────
+   FLOATING PARTICLES
+──────────────────────────────────────── */
+.sce-ptcls {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.sce-particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: ptclFloat linear forwards;
+}
+@keyframes ptclFloat {
+  0%   { transform: translateY(0) scale(1); opacity: 0.9; }
+  100% { transform: translateY(-240px) scale(0); opacity: 0; }
+}
+
+/* ────────────────────────────────────────
+   LIGHTNING CANVAS
+──────────────────────────────────────── */
+.sce-lightning {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* ────────────────────────────────────────
+   SCAN LINE sweep
+──────────────────────────────────────── */
+.sce-scanline {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(0,200,255,0.35) 30%,
+    rgba(196,129,255,0.5) 50%,
+    rgba(0,200,255,0.35) 70%,
+    transparent
+  );
+  filter: blur(1px);
+  animation: scanSweep 5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 6;
+}
+@keyframes scanSweep {
+  0%   { top: 85%; opacity: 0; }
+  8%   { opacity: 0.8; }
+  92%  { opacity: 0.8; }
+  100% { top: 10%; opacity: 0; }
+}
+
+/* ────────────────────────────────────────
+   THREE.JS canvas wrap
+──────────────────────────────────────── */
+.sce-threejs-wrap {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 5;
+}

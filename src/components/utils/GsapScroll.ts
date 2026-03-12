@@ -79,7 +79,7 @@ export function setCharTimeline(
       .to(neckBone.rotation,  { x: 0.6, delay: 2, duration: 3 }, 0)
       .to((safeMon as THREE.Mesh).material,   { opacity: 1, duration: 0.8, delay: 3.2 }, 0)
       .to((safeScrLt as THREE.Mesh).material, { opacity: 1, duration: 0.8, delay: 4.5 }, 0)
-      .fromTo(".what-box-in", { display: "none" }, { display: "flex", duration: 0.1, delay: 6 }, 0)
+      .fromTo(".what-box-in", { opacity: 0 }, { opacity: 1, duration: 0.1, delay: 6 }, 0)
       .fromTo((safeMon as THREE.Mesh).position, { y: -10, z: 2 }, { y: 0, z: 0, delay: 1.5, duration: 3 }, 0)
       .fromTo(".character-rim", { opacity: 1, scaleX: 1.4 }, { opacity: 0, scale: 0, y: "-70%", duration: 5, delay: 2 }, 0.3);
 

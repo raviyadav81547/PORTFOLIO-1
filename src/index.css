@@ -32,7 +32,8 @@ h6 {
   font-family: "Geist", sans-serif;
 }
 body {
-  overflow: hidden;
+  overflow: hidden; /* unlocked by initialFX after loading */
+  scroll-behavior: smooth;
 }
 a {
   color: inherit;
@@ -273,3 +274,26 @@ a:not([data-cursor="disable"]):not(.navbar-title):not(.navbar-connect):hover {
   display: block;
 }
 
+
+/* ── BUTTERY SMOOTH SCROLL & PERFORMANCE ── */
+#smooth-wrapper,
+#smooth-content {
+  will-change: transform;
+}
+.character-model,
+.character-model canvas {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+/* Prevent layout shift flicker during animations */
+.name-row,
+.big-word,
+.landing-intro,
+.landing-info {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+/* Smooth transitions on all interactive elements */
+* {
+  -webkit-tap-highlight-color: transparent;
+}

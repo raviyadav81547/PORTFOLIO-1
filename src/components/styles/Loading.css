@@ -1,4 +1,9 @@
-.loading-overlay {
+/* ============================================================
+   RAVI KUMAR — LOADER v3
+   Full-screen, smooth 2s, purple→blue→green bar, auto-dismiss
+   ============================================================ */
+
+.rv-loader {
   position: fixed;
   inset: 0;
   background: #000;
@@ -6,85 +11,128 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: all;
-}
-
-.loading-line {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 320px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #c481ff, transparent);
-  border-radius: 1px;
-  opacity: 0;
-  transform-origin: center;
-  scale: 0 1;
   overflow: hidden;
-  transition: border-radius 0.35s, height 0.35s, background 0.1s;
+  transition: opacity 0.55s ease, transform 0.55s ease;
 }
-
-/* After morph: the line becomes a capsule */
-.loading-line {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1.5px solid rgba(196, 129, 255, 0.6);
-  background: rgba(11, 8, 12, 0.95);
-}
-
-.loading-capsule-inner {
+.rv-loader--exit {
   opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+/* ── TOP PROGRESS BAR ── */
+.rv-loader__topbar {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 2px;
+  background: linear-gradient(90deg, #c481ff, #00c8ff, #4fffb0);
+  animation: topBarSweep 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  box-shadow: 0 0 14px rgba(196, 129, 255, 0.8);
+}
+@keyframes topBarSweep {
+  0%   { transform: scaleX(0); transform-origin: left; }
+  100% { transform: scaleX(1); transform-origin: left; }
+}
+
+/* ── CENTER CAPSULE ── */
+.rv-loader__center {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 0 20px;
-  width: 100%;
+  gap: 14px;
+  animation: fadeUp 0.5s ease forwards;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.loading-name {
-  font-family: 'Geist', 'Inter', sans-serif;
-  font-size: 18px;
+/* ── NAME ── */
+.rv-loader__name {
+  font-family: "Geist", sans-serif;
   font-weight: 100;
-  color: #fff;
+  font-size: clamp(28px, 5vw, 56px);
   letter-spacing: 0.35em;
-  transition: font-weight 0.05s linear;
   white-space: nowrap;
-  text-shadow: 0 0 20px rgba(196, 129, 255, 0.7);
+}
+.rv-ln-ravi {
+  color: #fff;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+}
+.rv-ln-dot {
+  color: rgba(196, 129, 255, 0.4);
+}
+.rv-ln-kumar {
+  color: #c481ff;
+  text-shadow: 0 0 30px rgba(196, 129, 255, 0.8), 0 0 60px rgba(196, 129, 255, 0.3);
 }
 
-.loading-progress-track {
-  width: 100%;
-  height: 2px;
-  background: rgba(196, 129, 255, 0.15);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.loading-progress-fill {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, #9333ea, #c481ff, #e879f9);
-  border-radius: 2px;
-  box-shadow: 0 0 8px rgba(196, 129, 255, 0.8);
-  transition: none;
-}
-
-.loading-counter {
-  font-family: 'Geist', monospace;
+/* ── SUB ── */
+.rv-loader__sub {
+  font-family: "Geist", monospace;
   font-size: 10px;
-  font-weight: 400;
-  color: rgba(196, 129, 255, 0.8);
-  letter-spacing: 0.2em;
+  letter-spacing: 0.4em;
+  color: rgba(255, 255, 255, 0.2);
+  text-transform: uppercase;
 }
 
-.loading-shards {
-  display: none;
-  position: fixed;
-  inset: 0;
+/* ── PROGRESS TRACK ── */
+.rv-loader__track {
+  position: relative;
+  width: min(380px, 72vw);
+  height: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 2px;
+  overflow: visible;
+}
+.rv-loader__fill {
+  height: 100%;
+  background: linear-gradient(90deg, #9333ea, #c481ff, #00c8ff, #4fffb0);
+  border-radius: 2px;
+  transition: width 0.12s linear;
+  box-shadow: 0 0 10px rgba(196, 129, 255, 0.7);
+}
+.rv-loader__glow {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(196, 129, 255, 0.6);
+  filter: blur(6px);
   pointer-events: none;
-  z-index: 10000;
-  overflow: hidden;
+  transition: left 0.12s linear;
+}
+
+/* ── PERCENTAGE ── */
+.rv-loader__pct {
+  font-family: "Geist", monospace;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: rgba(196, 129, 255, 0.7);
+}
+
+/* ── AMBIENT ORBS ── */
+.rv-loader__orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(70px);
+  animation: orbFloat 5s ease-in-out infinite alternate;
+}
+.rv-orb1 {
+  width: 320px; height: 320px;
+  background: rgba(180, 79, 255, 0.12);
+  top: -10%; left: -5%;
+}
+.rv-orb2 {
+  width: 260px; height: 260px;
+  background: rgba(0, 200, 255, 0.08);
+  bottom: -10%; right: -5%;
+  animation-delay: -2.5s;
+}
+@keyframes orbFloat {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(20px, -20px) scale(1.08); }
 }

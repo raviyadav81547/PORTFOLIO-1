@@ -252,6 +252,15 @@
 .w-automation { position: relative; }
 .w-builder { position: absolute; top: 0; left: 0; }
 
+/* WHITE */
+.bw-white {
+  color: #ffffff;
+  text-shadow:
+    0 0 1px rgba(255,255,255,0.8),
+    2px 2px 0 rgba(255,255,255,0.06),
+    0 4px 20px rgba(0,0,0,0.4);
+}
+
 /* WHITE with stroke — RAVI KUMAR style */
 .bw-stroke {
   color: #ffffff;
@@ -344,4 +353,62 @@
   .nl { font-size: clamp(70px, 5.5vw, 100px); }
   .big-word { font-size: clamp(72px, 6.5vw, 110px); }
   .big-word-clip { height: clamp(65px, 7vw, 100px); }
+}
+
+/* ══════════════════════════════════════
+   ROCKET BINDI BURST
+══════════════════════════════════════ */
+.bindi-burst {
+  animation: bindiBurst 0.4s ease-out forwards !important;
+}
+@keyframes bindiBurst {
+  0%   { opacity: 1; transform: translateX(-50%) scale(1); }
+  50%  { opacity: 0.8; transform: translateX(-50%) scale(2.8); }
+  100% { opacity: 0; transform: translateX(-50%) scale(0); }
+}
+
+/* ══════════════════════════════════════
+   BIG-WORD CLIP HEIGHT FIX
+   — tall enough for both AUTOMA+TION & BUILDER
+══════════════════════════════════════ */
+.big-word-clip {
+  height: auto !important;
+  min-height: clamp(55px, 8.5vw, 110px);
+  overflow: visible !important;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.w-automation,
+.w-builder {
+  position: relative !important;
+}
+
+/* ══════════════════════════════════════
+   NEON PULSE on bw-teal (TION)
+══════════════════════════════════════ */
+.bw-teal {
+  animation: neonTeal 3s ease-in-out infinite alternate;
+}
+@keyframes neonTeal {
+  from { text-shadow: 0 0 22px rgba(79,255,176,.7), 0 0 55px rgba(79,255,176,.25); }
+  to   { text-shadow: 0 0 44px rgba(79,255,176,1),  0 0 90px rgba(79,255,176,.55), 0 0 140px rgba(79,255,176,.15); }
+}
+.bw-purple {
+  animation: neonPurpleLand 3s ease-in-out infinite alternate;
+}
+@keyframes neonPurpleLand {
+  from { text-shadow: 0 0 22px rgba(196,129,255,.7), 0 0 55px rgba(196,129,255,.25); }
+  to   { text-shadow: 0 0 44px rgba(196,129,255,1),  0 0 90px rgba(196,129,255,.55), 0 0 140px rgba(196,129,255,.15); }
+}
+
+/* ══════════════════════════════════════
+   HELLO WRAP — strike animation fix
+══════════════════════════════════════ */
+.hello-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
 }

@@ -93,17 +93,18 @@ const Landing = ({ children }: PropsWithChildren) => {
     const tl = gsap.timeline({ delay: 3.8 });
     tl.to(anAI,  { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" })
       .to(wAuto, { opacity: 1, y: 0, rotateX: 0, skewX: 0, duration: 0.65, ease: "expo.out" }, "-=0.1")
+      .to(wBuild,{ opacity: 1, y: 0, duration: 0.6, ease: "expo.out" }, "-=0.3")
       .to(sub,   { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, "-=0.2")
       .to(badge, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(2)" }, "-=0.1");
 
-    gsap.set(wBuild, { yPercent: 100, opacity: 0 });
+    // Scroll swap: AUTOMATION scrolls out, BUILDER scrolls in
     const st = gsap.timeline({
       scrollTrigger: { trigger: ".landing-section", start: "10% top", end: "50% top", scrub: 1.5 },
     });
     st.to(wAuto,  { yPercent: -110, opacity: 0, ease: "none" }, 0)
       .to(anAI,   { y: -20, opacity: 0, ease: "none" }, 0)
       .to(sub,    { opacity: 0, ease: "none" }, 0)
-      .fromTo(wBuild, { yPercent: 110, opacity: 0 }, { yPercent: 0, opacity: 1, ease: "none" }, 0.05);
+      .to(wBuild, { yPercent: -110, opacity: 0, ease: "none" }, 0);
 
     return () => { tl.kill(); st.kill(); };
   }, []);
@@ -130,18 +131,72 @@ const Landing = ({ children }: PropsWithChildren) => {
     return () => clearTimeout(t);
   }, []);
 
+
+  // ── ROCKET BINDI ──
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const bindi = document.getElementById("rocket-bindi");
+      if (!bindi) return;
+      bindi.style.display = "flex";
+      let top = window.scrollY + window.innerHeight * 0.82;
+      bindi.style.top = top + "px";
+      let vy = 0;
+      const move = () => {
+        vy += 1.4;
+        top += vy;
+        bindi.style.top = top + "px";
+        const target = document.querySelector(".career-section") as Element | null;
+        if (!target) { requestAnimationFrame(move); return; }
+        const tRect = target.getBoundingClientRect();
+        if (tRect.top > 80) {
+          requestAnimationFrame(move);
+        } else {
+          bindi.style.transition = "opacity 0.3s, transform 0.3s";
+          bindi.style.opacity = "0";
+          bindi.style.transform = "translateX(-50%) scale(2.5)";
+          setTimeout(() => { bindi.style.display = "none"; }, 350);
+        }
+      };
+      requestAnimationFrame(move);
+    }, 5500);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
     <div className="landing-section" id="landingDiv">
+      {/* ROCKET BINDI */}
+      <div
+        id="rocket-bindi"
+        style={{
+          position:"fixed", left:"50%", transform:"translateX(-50%)",
+          zIndex:600, pointerEvents:"none", display:"none",
+          flexDirection:"column", alignItems:"center", top:"80vh",
+        }}
+      >
+        <div style={{
+          width:14,height:14,borderRadius:"50%",
+          background:"radial-gradient(circle,#fff,#c481ff)",
+          boxShadow:"0 0 18px #c481ff,0 0 40px rgba(196,129,255,0.5)",
+        }}/>
+        <div style={{
+          width:2,height:50,marginTop:2,
+          background:"linear-gradient(to bottom,rgba(196,129,255,0.9),rgba(0,200,255,0.3),transparent)",
+        }}/>
+      </div>
+
       <div className="landing-container">
 
         {/* ── LEFT: NAME ── */}
         <div className="landing-intro">
-          <div ref={helloRef} className="hello-text">Hello! I'm</div>
+          <div className="hello-wrap">
+            <div ref={helloRef} className="hello-text">Hello! I'm</div>
+            <div className="hello-strike" />
+          </div>
 
           <div className="name-wrap">
             <div className="name-row" ref={raviRef}>
               {"RAVI".split("").map((c, i) => (
-                <span key={i} className="nl" data-char={c}>{c}</span>
+                <span key={i} className="nl nl-ravi" data-char={c}>{c}</span>
               ))}
             </div>
             <div className="name-row kumar-row" ref={kumarRef}>
@@ -171,7 +226,7 @@ const Landing = ({ children }: PropsWithChildren) => {
           </div>
           <div className="big-word-clip">
             <div className="w-automation big-word">
-              <span className="bw-white">AUTO</span><span className="bw-teal">MATION</span>
+              <span className="bw-white">AUTOMA</span><span className="bw-teal">TION</span>
             </div>
             <div className="w-builder big-word">
               <span className="bw-white">BUILD</span><span className="bw-purple">ER</span>

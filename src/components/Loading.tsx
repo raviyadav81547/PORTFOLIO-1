@@ -1,78 +1,61 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./styles/Loading.css";
 import { useLoading } from "../context/LoadingProvider";
-import Marquee from "react-fast-marquee";
 
 const Loading = ({ percent }: { percent: number }) => {
   const { setIsLoading } = useLoading();
-  const [loaded, setLoaded] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [clicked, setClicked] = useState(false);
+  const [exiting, setExiting] = useState(false);
+  const doneRef = useRef(false);
 
-  if (percent >= 100) {
-    setTimeout(() => {
-      setLoaded(true);
-      setTimeout(() => { setIsLoaded(true); }, 400);
-    }, 200);
-  }
-
+  // ✅ FIX: moved out of render — only fire once when percent hits 100
   useEffect(() => {
-    import("./utils/initialFX").then((module) => {
-      if (isLoaded) {
-        setClicked(true);
-        setTimeout(() => {
-          if (module.initialFX) module.initialFX();
-          setIsLoading(false);
-        }, 400);
-      }
-    });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, setIsLoading]);
+    if (percent < 100 || doneRef.current) return;
+    doneRef.current = true;
+    setExiting(true);
+    const t = setTimeout(() => {
+      import("./utils/initialFX").then((m) => {
+        if (m.initialFX) m.initialFX();
+        setIsLoading(false);
+      });
+    }, 650);
+    return () => clearTimeout(t);
+  }, [percent, setIsLoading]);
 
-  function handleMouseMove(e: React.MouseEvent<HTMLElement>) {
-    const { currentTarget: target } = e;
-    const rect = target.getBoundingClientRect();
-    target.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
-    target.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
-  }
+  const pct = Math.min(percent, 100);
 
   return (
-    <>
-      <div className="loading-header">
-        <a href="/#" className="loader-title" data-cursor="disable">Logo</a>
-        <div className={`loaderGame ${clicked && "loader-out"}`}>
-          <div className="loaderGame-container">
-            <div className="loaderGame-in">
-              {[...Array(27)].map((_, i) => <div className="loaderGame-line" key={i}></div>)}
-            </div>
-            <div className="loaderGame-ball"></div>
-          </div>
+    <div className={`rv-loader${exiting ? " rv-loader--exit" : ""}`}>
+      {/* Top bar */}
+      <div className="rv-loader__topbar" />
+
+      {/* Center capsule */}
+      <div className="rv-loader__center">
+        <div className="rv-loader__name">
+          <span className="rv-ln-ravi">RAVI</span>
+          <span className="rv-ln-dot"> · </span>
+          <span className="rv-ln-kumar">KUMAR</span>
         </div>
+        <div className="rv-loader__sub">AI · AUTOMATION · GENAI</div>
+
+        <div className="rv-loader__track">
+          <div
+            className="rv-loader__fill"
+            style={{ width: `${pct}%` }}
+          />
+          <div
+            className="rv-loader__glow"
+            style={{ left: `${pct}%` }}
+          />
+        </div>
+
+        <div className="rv-loader__pct">{pct}%</div>
       </div>
-      <div className="loading-screen">
-        <div className="loading-marquee">
-          <Marquee>
-            <span> AI Automation Builder</span> <span>GenAI Developer</span>
-            <span> Workflow Architect</span> <span>Problem Solver</span>
-          </Marquee>
-        </div>
-        <div className={`loading-wrap ${clicked && "loading-clicked"}`} onMouseMove={handleMouseMove}>
-          <div className="loading-hover"></div>
-          <div className={`loading-button ${loaded && "loading-complete"}`}>
-            <div className="loading-container">
-              <div className="loading-content">
-                <div className="loading-content-in">
-                  Loading <span>{percent}%</span>
-                </div>
-              </div>
-              <div className="loading-box"></div>
-            </div>
-            <div className="loading-content2"><span>Welcome</span></div>
-          </div>
-        </div>
-      </div>
-    </>
+
+      {/* Ambient orbs */}
+      <div className="rv-loader__orb rv-orb1" />
+      <div className="rv-loader__orb rv-orb2" />
+    </div>
   );
 };
 
@@ -81,9 +64,9 @@ export default Loading;
 export const setProgress = (setLoading: (value: number) => void) => {
   let percent = 0;
 
-  // 0→85% in ~1.5s smooth easing
-  const totalMs = 1500;
-  const steps = 85;
+  // 0→85% in ~1.8s buttery smooth easing
+  const totalMs = 1800;
+  const steps = 120;
   const baseInterval = totalMs / steps;
 
   let step = 0;

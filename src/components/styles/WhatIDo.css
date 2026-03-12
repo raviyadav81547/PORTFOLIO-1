@@ -37,7 +37,7 @@
   height: 500px;
   margin-left: 200px;
   position: relative;
-  display: none;
+  display: flex; /* ✅ FIX: was display:none — broke mobile. GSAP overrides on desktop */
 }
 .what-content {
   width: 450px;
