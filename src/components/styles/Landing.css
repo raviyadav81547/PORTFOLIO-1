@@ -140,7 +140,7 @@
 .nl {
   font-family: "Geist", sans-serif;
   font-weight: 900;
-  font-size: clamp(44px, 5.8vw, 72px);
+  font-size: clamp(54px, 7.8vw, 92px);
   line-height: 0.9;
   display: inline-block;
   cursor: default;
@@ -202,8 +202,6 @@
   transform: translate(0%, -50%);
   z-index: 10;
   text-align: left;
-  max-width: 34vw;
-  overflow: hidden;
 }
 
 /* AN AI label */
@@ -236,7 +234,7 @@
 .big-word-clip {
   position: relative;
   overflow: hidden;
-  height: clamp(42px, 6.5vw, 82px);
+  height: clamp(55px, 8.5vw, 100px);
   margin-bottom: 12px;
 }
 
@@ -244,7 +242,7 @@
 .big-word {
   font-family: "Geist", sans-serif;
   font-weight: 900;
-  font-size: clamp(40px, 5.8vw, 76px);
+  font-size: clamp(52px, 8vw, 96px);
   text-transform: uppercase;
   letter-spacing: -1px;
   line-height: 0.9;
@@ -340,84 +338,10 @@
 }
 @media screen and (min-width: 1200px) {
   .landing-intro { right: 70%; }
-  .landing-info  { left: 68%; max-width: 30vw; }
+  .landing-info  { left: 70%; }
 }
 @media screen and (min-width: 1600px) {
   .nl { font-size: clamp(70px, 5.5vw, 100px); }
-  .big-word { font-size: clamp(52px, 5.2vw, 82px); }
-  .big-word-clip { height: clamp(55px, 5.8vw, 86px); }
-  .nl { font-size: clamp(52px, 4.5vw, 72px); }
+  .big-word { font-size: clamp(72px, 6.5vw, 110px); }
+  .big-word-clip { height: clamp(65px, 7vw, 100px); }
 }
-
-/* ══════════════════════════════════════
-   UPGRADE ADDITIONS
-══════════════════════════════════════ */
-
-/* KUMAR chrome shimmer */
-.nl-chrome {
-  background: linear-gradient(
-    90deg,
-    #c0c0c0 0%, #e8e8e8 15%,
-    #c481ff 30%, #ffffff 45%,
-    #c481ff 60%, #e0e0e0 75%,
-    #c0c0c0 100%
-  );
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: chromeShimmer 3s linear infinite;
-  animation-delay: 4s;
-}
-@keyframes chromeShimmer {
-  0%   { background-position: 0% 50%; }
-  100% { background-position: 300% 50%; }
-}
-
-/* Glass orbs */
-.landing-orbs {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  overflow: hidden;
-}
-.landing-orb {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 30% 30%,
-    rgba(196,129,255,0.10) 0%,
-    rgba(79,255,176,0.05) 40%,
-    rgba(196,129,255,0.03) 70%,
-    transparent 100%
-  );
-  border: 1px solid rgba(196,129,255,0.10);
-  backdrop-filter: blur(2px);
-  animation: orbFloat linear infinite;
-}
-@keyframes orbFloat {
-  0%,100% { transform: translateY(0) scale(1); }
-  50%     { transform: translateY(-22px) scale(1.04); }
-}
-
-/* Film grain */
-.film-grain {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9990;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 180px 180px;
-}
-
-/* Section reveal */
-.section-reveal {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-.section-reveal.in-view { opacity: 1; transform: translateY(0); }
-.split-char { display: inline-block; }
