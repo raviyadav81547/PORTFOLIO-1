@@ -22,15 +22,15 @@ function scrambleText(el: HTMLElement, finalText: string) {
 }
 
 const socials = [
-  { label: "WhatsApp",  icon: "💬", href: "https://wa.me/917497817064", color: "#25D366" },
-  { label: "Instagram", icon: "📸", href: "https://instagram.com/ravikumar", color: "#e1306c" },
-  { label: "LinkedIn",  icon: "💼", href: "https://linkedin.com/in/raviyadav81547", color: "#0077b5" },
-  { label: "GitHub",    icon: "🐙", href: "https://github.com/raviyadav81547", color: "#c481ff" },
-  { label: "YouTube",   icon: "🎬", href: "https://youtube.com/@ravikumar", color: "#ff0000" },
-  { label: "Telegram",  icon: "✈️", href: "https://t.me/ravikumar", color: "#29b6f6" },
-  { label: "Website",   icon: "🌐", href: "https://tapautomate.in", color: "#4fffb0" },
-  { label: "Facebook",  icon: "👤", href: "https://facebook.com/ravikumar", color: "#1877f2" },
+  { label: "WhatsApp",  icon: "💬", href: "https://wa.me/917497817064",                   color: "#25D366" },
+  { label: "Instagram", icon: "📸", href: "https://instagram.com/ravikumar",              color: "#e1306c" },
+  { label: "LinkedIn",  icon: "💼", href: "https://linkedin.com/in/raviyadav81547",       color: "#0077b5" },
+  { label: "GitHub",    icon: "🐙", href: "https://github.com/raviyadav81547",            color: "#c481ff" },
+  { label: "YouTube",   icon: "🎬", href: "https://youtube.com/@ravikumar",               color: "#ff0000" },
+  { label: "Telegram",  icon: "✈️", href: "https://t.me/ravikumar",                       color: "#29b6f6" },
+  // NOTE: Update Instagram, YouTube, Telegram, Facebook hrefs with real profile URLs
 ];
+// Website removed from footer socials — already shown in SocialIcons sidebar
 
 const Contact = () => {
   const emailRef = useRef<HTMLAnchorElement>(null);

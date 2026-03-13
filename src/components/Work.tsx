@@ -12,13 +12,14 @@ interface Project {
 }
 
 const projects: Project[] = [
-  { id: 1, title: "TapAutomate", desc: "AI automation platform — intelligent workflows at scale", tech: ["Python", "Flask", "GenAI"], img: "/images/project01.webp", link: "https://tapautomate.in" },
-  { id: 2, title: "Image & Visual AI", desc: "AI-powered image generation and visual processing system", tech: ["Python", "OpenAI", "React"], img: "/images/project02.webp" },
-  { id: 3, title: "Video Motion AI", desc: "Automated video content creation with AI motion graphics", tech: ["Python", "FFmpeg", "AI"], img: "/images/project03.webp" },
-  { id: 4, title: "UGC Brand Automation", desc: "User-generated content automation pipeline for brands", tech: ["Node.js", "AI", "APIs"], img: "/images/project04.webp" },
-  { id: 5, title: "Validation Engine", desc: "Intelligent data validation framework with ML scoring", tech: ["Python", "ML", "Flask"], img: "/images/project05.webp" },
-  { id: 6, title: "AI Workflow Framework", desc: "Modular AI workflow orchestration and task automation", tech: ["Python", "GSAP", "GenAI"], img: "/images/project06.webp" },
+  { id: 1, title: "TapAutomate",           desc: "AI automation platform — intelligent workflows at scale",   tech: ["Python","Flask","GenAI"],  img: "/images/project01.webp", link: "https://tapautomate.in" },
+  { id: 2, title: "Image & Visual AI",     desc: "AI-powered image generation and visual processing system", tech: ["Python","OpenAI","React"], img: "/images/project02.webp", link: "https://tapautomate.in" },
+  { id: 3, title: "Video Motion AI",       desc: "Automated video content creation with AI motion graphics", tech: ["Python","FFmpeg","AI"],    img: "/images/project03.webp", link: "https://tapautomate.in" },
+  { id: 4, title: "UGC Brand Automation",  desc: "User-generated content automation pipeline for brands",    tech: ["Node.js","AI","APIs"],     img: "/images/project04.webp", link: "https://tapautomate.in" },
+  { id: 5, title: "Validation Engine",     desc: "Intelligent data validation framework with ML scoring",    tech: ["Python","ML","Flask"],     img: "/images/project05.webp", link: "https://tapautomate.in" },
+  { id: 6, title: "AI Workflow Framework", desc: "Modular AI workflow orchestration and task automation",    tech: ["Python","GSAP","GenAI"],   img: "/images/project06.webp", link: "https://tapautomate.in" },
 ];
+// NOTE: Replace each link with real project URL when available
 
 const Work = () => {
   const sectionRef = useRef<HTMLElement>(null);

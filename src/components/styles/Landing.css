@@ -199,9 +199,11 @@
 .landing-info {
   position: absolute;
   top: 50%; left: 66%;
+  right: 0%;
   transform: translate(0%, -50%);
   z-index: 10;
   text-align: left;
+  overflow: visible;
 }
 
 /* AN AI label */
@@ -242,7 +244,7 @@
 .big-word {
   font-family: "Geist", sans-serif;
   font-weight: 900;
-  font-size: clamp(52px, 8vw, 96px);
+  font-size: clamp(36px, 5.5vw, 82px);
   text-transform: uppercase;
   letter-spacing: -1px;
   line-height: 0.9;
@@ -329,29 +331,30 @@
 ══════════════════════════════════════ */
 @media screen and (max-width: 767px) {
   .landing-intro { top: 38%; right: auto; left: 5%; transform: translateY(-50%); }
-  .landing-info { top: auto; bottom: 10%; left: 5%; transform: none; }
+  .landing-info { top: auto; bottom: 10%; left: 5%; right: 5%; transform: none; overflow: visible; }
   .character-model { height: 80vh; z-index: 0; }
-  .big-word-clip { height: clamp(40px, 11vw, 60px); }
-  .big-word { font-size: clamp(38px, 10.5vw, 58px); }
+  .big-word-clip { height: auto; min-height: clamp(40px, 11vw, 60px); }
+  .big-word { font-size: clamp(32px, 9vw, 52px); }
 }
 @media screen and (min-width: 768px) {
   .character-model { height: 80vh; }
   .landing-intro { right: 66%; }
-  .landing-info  { left: 66%; }
-  .big-word-clip { height: clamp(50px, 7.5vw, 90px); }
+  .landing-info  { left: 66%; right: 2%; overflow: visible; }
+  .big-word-clip { height: auto; min-height: clamp(50px, 7.5vw, 90px); }
 }
 @media screen and (min-width: 1025px) {
-  .character-model { height: 100vh; bottom: 0; z-index: 2; position: fixed; }
-  .character-model::after { display: none; }
-  .character-model::before { display: none; }
+  /* FIXED: was position:fixed which caused ghost overlap in About/WhatIDo */
+  .character-model { height: 100vh; bottom: 0; z-index: 2; position: absolute; }
+  .character-model::after { display: block; }
+  .character-model::before { display: block; }
 }
 @media screen and (min-width: 1200px) {
   .landing-intro { right: 70%; }
-  .landing-info  { left: 70%; }
+  .landing-info  { left: 68%; right: 0; }
 }
 @media screen and (min-width: 1600px) {
   .nl { font-size: clamp(70px, 5.5vw, 100px); }
-  .big-word { font-size: clamp(72px, 6.5vw, 110px); }
+  .big-word { font-size: clamp(52px, 5.2vw, 88px); }
   .big-word-clip { height: clamp(65px, 7vw, 100px); }
 }
 

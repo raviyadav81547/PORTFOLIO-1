@@ -68,7 +68,7 @@ const SocialIcons = () => {
           </a>
         </span>
         <span>
-          <a href="https://www.tapautomate.in" target="_blank">
+          <a href="https://instagram.com/ravikumar" target="_blank">
             <FaInstagram />
           </a>
         </span>
